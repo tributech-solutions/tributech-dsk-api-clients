@@ -88,7 +88,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": null
+      "output": "DataAPIClient.gen.cs"
     }
   }
 }
