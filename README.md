@@ -10,7 +10,7 @@ Requires netstandard2.0 or higher.
 
 ``` csharp
 var authHandler = new APIAuthHandler(tokenUrl, scope, clientId, clientSecret);
-var authorizedHttpClient = new HttpClient(authHandler))
+var authorizedHttpClient = new HttpClient(authHandler);
 var apiClient = new DataAPIClient(nodeUrl, authorizedHttpClient);
 
 // Get values within the last 7 days
