@@ -1,4 +1,4 @@
-# Tribtuech DataSpace Kit API clients
+# Tributech DataSpace Kit API clients
 
 A collection of API clients for easy access to the DataSpace Kit.
 
