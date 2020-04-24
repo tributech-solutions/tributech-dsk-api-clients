@@ -8,51 +8,51 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Tributech.Dataspace.Clients {
+namespace Tributech.DataSpace.Clients.NetCore {
     public class APIAuthHandler: DelegatingHandler {
         // refresh the token x sec before it actually expires
-        private const int tokenExpiryGracePeriod = 5;
+        private const int TokenExpiryGracePeriod = 5;
 
         private class AuthResponse {
-            public string access_token;
-            public int expires_in;
+            public string Access_token { get; set; }
+            public int Expires_in { get; set; }
         }
 
-        private string authUrl;
+        private readonly string _authUrl;
 
-        private string token = null;
+        private string _token;
 
-        private DateTime tokenValidUntil = DateTime.MinValue;
+        private DateTime _tokenValidUntil = DateTime.MinValue;
 
-        private readonly string scope;
+        private readonly string _scope;
 
-        private readonly string clientId;
+        private readonly string _clientId;
 
-        private readonly string clientSecret;
+        private readonly string _clientSecret;
 
-        private readonly object _lockobj = new object(); 
+        private readonly object _lockobj = new object();
 
         public APIAuthHandler(string authUrl, string scope, string clientId, string clientSecret)
-        :this(authUrl, scope, clientId, clientSecret, new HttpClientHandler()) { } 
+        :this(authUrl, scope, clientId, clientSecret, new HttpClientHandler()) { }
 
-        public APIAuthHandler(string authUrl, string scope, string clientId, string clientSecret, HttpMessageHandler handler) 
+        public APIAuthHandler(string authUrl, string scope, string clientId, string clientSecret, HttpMessageHandler handler)
         :base(handler) {
-            this.authUrl = authUrl;
-            this.scope = scope;
-            this.clientId = clientId;
-            this.clientSecret = clientSecret;
+            _authUrl = authUrl;
+            _scope = scope;
+            _clientId = clientId;
+            _clientSecret = clientSecret;
         }
 
-        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
-            if (DateTime.Now.Ticks > tokenValidUntil.Ticks) {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+            if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
                 lock(_lockobj) {
-                    if (DateTime.Now.Ticks > tokenValidUntil.Ticks) {
+                    if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
                         RefreshToken(cancellationToken).Wait(); // cannot await inside of lock
                     }
                 }
             }
 
-            request.Headers.Add("Authorization", $"Bearer {this.token}");
+            request.Headers.Add("Authorization", $"Bearer {_token}");
             return await base.SendAsync(request, cancellationToken);
         }
 
@@ -61,12 +61,12 @@ namespace Tributech.Dataspace.Clients {
             var values = new Dictionary<string, string>()
             {
                 ["grant_type"] = "client_credentials",
-                ["scope"] = scope
+                ["scope"] = _scope
             };
             var postBody = new FormUrlEncodedContent(values);
-            var request = new HttpRequestMessage(HttpMethod.Post, authUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, _authUrl);
             request.Content = postBody;
-            var byteArray = new UTF8Encoding().GetBytes($"{clientId}:{clientSecret}");
+            var byteArray = new UTF8Encoding().GetBytes($"{_clientId}:{_clientSecret}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             var response = await base.SendAsync(request, cancellationToken);
 
@@ -75,11 +75,11 @@ namespace Tributech.Dataspace.Clients {
             }
 
             var responseBodyString = await response.Content.ReadAsStringAsync();
-            var responseBody = JsonConvert.DeserializeObject<AuthResponse>(responseBodyString);
+			var responseBody = JsonConvert.DeserializeObject<AuthResponse>(responseBodyString);
 
-            this.token = responseBody.access_token;
-            int expiresIn = responseBody.expires_in;
-            this.tokenValidUntil = now.AddSeconds(expiresIn - tokenExpiryGracePeriod);
+            _token = responseBody.Access_token;
+            int expiresIn = responseBody.Expires_in;
+            _tokenValidUntil = now.AddSeconds(expiresIn - TokenExpiryGracePeriod);
         }
     }
 }
