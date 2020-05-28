@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using Tributech.Dataspace.Clients;
+using Tributech.Dataspace.Clients.DataAPI;
 
 namespace Tributech.Dataspace.ClientExamples {
     class Program {
