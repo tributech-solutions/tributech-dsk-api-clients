@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+    <!-- Remove '__Test' for making the package publicly visible on nuget.org  --> 
+    <PackageId>Tributech.Dataspace.Clients__Test</PackageId> 
+    <Version>0.0.1</Version> 
+    <Authors>Tributech</Authors> 
+    <Company>Tributech</Company> 
+ 
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
   </PropertyGroup>
 
   <ItemGroup>
