@@ -9,11 +9,11 @@ using Tributech.DataSpace.Clients.NetCore;
 namespace Tributech.Dataspace.ClientExamples {
     class Program {
         // Api Client Config
-        private const string nodeUrl = "https://node.example.com";
-        private const string tokenUrl = "https://id.example.com";
-        private const string scope = "195d0b59-2113-4d67-ac6c-7116595e413b-full-access";
-        private const string clientId = "4c90a8bf-10de-4fe5-ae44-fcd4e9bdb602";
-        private const string clientSecret = "56af011e-7c22-48e7-a4be-fb867b0be504";
+        private const string nodeUrl = "http://data-api.your-node.dataspace-node.com";
+        private const string tokenUrl = "https://id.your-hub.dataspace-hub.com/connect/token";
+        private const string scope = "data-api-endpoint";
+        private const string clientId = "<your-node-specific-api-client>";
+        private const string clientSecret = "<your-node-specific-api-client-secret>";
 
         private static readonly Guid dataStreamId = new Guid("0514974b-fe05-4264-8c63-a636c4bea6a0");
         
