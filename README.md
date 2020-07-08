@@ -14,5 +14,5 @@ var authorizedHttpClient = new HttpClient(authHandler);
 var apiClient = new DataAPIClient(nodeUrl, authorizedHttpClient);
 
 // Get values within the last 7 days
-ICollection<ReadValueDoubleModel> data = await apiClient.DoubleAllAsync(dataStreamId, DateTime.Now, DateTime.Now.AddDays(-7), "asc", null, null, null);
+ICollection<ReadValueDoubleModel> data = await apiClient.GetValuesAsDoubleAsync(dataStreamId, DateTime.Now, DateTime.Now.AddDays(-7), fromSyncNumber: null, "asc", pageNumber: null, pageSize: null);
 ```
