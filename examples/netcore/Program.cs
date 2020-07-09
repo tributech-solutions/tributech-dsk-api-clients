@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
-using Tributech.Dataspace.Clients;
-using Tributech.DataSpace.Clients.NetCore;
+using Tributech.Dsk.Api.Clients;
+using Tributech.Dsk.Api.Clients.DataApi;
 
 namespace Tributech.Dataspace.ClientExamples {
     class Program {

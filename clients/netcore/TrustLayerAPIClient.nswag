@@ -54,7 +54,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Tributech.Dataspace.Clients.NetCore",
+      "namespace": "Tributech.Dsk.Api.Clients.TrustApi",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
