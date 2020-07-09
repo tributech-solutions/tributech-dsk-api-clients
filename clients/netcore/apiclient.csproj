@@ -3,13 +3,26 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <!-- Remove '__Test' for making the package publicly visible on nuget.org  --> 
-    <PackageId>Tributech.Dataspace.Clients__Test</PackageId> 
-    <Version>0.0.1</Version> 
-    <Authors>Tributech</Authors> 
-    <Company>Tributech</Company> 
+    <PackageId>Tributech.Dsk.Api.Clients</PackageId> 
+    <Version>1.6.0-rc0</Version> 
+
+    <Title>Tributech DSK API Clients</Title>
+    <Authors>Tributech Solutions GmbH</Authors> 
+    <Company>Tributech Solutions GmbH</Company> 
+
+    <PackageTags>Data; Audit; Data Sharing; Tributech; DSK; Data Space Kit; IoT</PackageTags>
+
+    <PackageDescription>
+      This is a client library for the APIs of the Tributech DataSpace Kit (DSK). For more information go to the documentation (https://docs.tributech.io/) or view the repository on GitHub (https://github.com/tributech-solutions/dataspacekit-api-clients).
+    </PackageDescription>
+
+    <ProjectUrl>https://docs.tributech.io/</ProjectUrl>
+    <RepositoryUrl>https://github.com/tributech-solutions/dataspacekit-api-clients</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
  
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> 
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
