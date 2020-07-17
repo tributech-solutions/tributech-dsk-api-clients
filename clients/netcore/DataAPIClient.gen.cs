@@ -2105,7 +2105,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("merkleTreeDepth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int MerkleTreeDepth { get; set; }
     
-        /// <summary>Uri to retrieve the ProofLocation from the Trust-Layer API.</summary>
+        /// <summary>Uri to retrieve the ProofLocation from the Trust API.</summary>
         [Newtonsoft.Json.JsonProperty("uri", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Uri { get; set; }
     
@@ -2178,7 +2178,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("merkleTreeDepth", Required = Newtonsoft.Json.Required.Always)]
         public int MerkleTreeDepth { get; set; }
     
-        /// <summary>The Uri which specifies the location of the proof in the Trust-Layer API.</summary>
+        /// <summary>The Uri which specifies the location of the proof in the Trust API.</summary>
         [Newtonsoft.Json.JsonProperty("uri", Required = Newtonsoft.Json.Required.AllowNull)]
         public string Uri { get; set; }
     

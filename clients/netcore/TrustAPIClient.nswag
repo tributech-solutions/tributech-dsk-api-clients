@@ -39,7 +39,7 @@
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
-      "className": "TrustLayerAPIClient",
+      "className": "TrustAPIClient",
       "operationGenerationMode": "MultipleClientsFromOperationId",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
@@ -89,7 +89,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "TrustLayerAPIClient.gen.cs"
+      "output": "TrustAPIClient.gen.cs"
     }
   }
 }
