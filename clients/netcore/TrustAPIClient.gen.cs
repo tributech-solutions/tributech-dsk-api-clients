@@ -15,13 +15,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     using System = global::System;
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.6.0.0 (NJsonSchema v10.1.18.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class TrustLayerAPIClient 
+    public partial class TrustAPIClient 
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
-        public TrustLayerAPIClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public TrustAPIClient(string baseUrl, System.Net.Http.HttpClient httpClient)
         {
             BaseUrl = baseUrl; 
             _httpClient = httpClient; 
