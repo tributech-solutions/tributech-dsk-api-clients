@@ -16,7 +16,7 @@ namespace Tributech.Dataspace.ClientExamples {
         private const string clientSecret = "<your-node-specific-api-client-secret>";
 
         private static readonly Guid dataStreamId = new Guid("0514974b-fe05-4264-8c63-a636c4bea6a0");
-        
+
         static async Task Main(string[] args) {
             var authHandler = new APIAuthHandler(tokenUrl, scope, clientId, clientSecret);
             using (var authorizedHttpClient = new HttpClient(authHandler)) {
