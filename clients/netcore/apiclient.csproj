@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <PackageId>Tributech.Dsk.Api.Clients</PackageId> 
-    <Version>1.6.0-rc0</Version> 
+    <PackageId>Tributech.Dsk.Api.Clients</PackageId>
+    <Version>1.6.0-rc0</Version>
 
     <Title>Tributech DSK API Clients</Title>
-    <Authors>Tributech Solutions GmbH</Authors> 
-    <Company>Tributech Solutions GmbH</Company> 
+    <Authors>Tributech Solutions GmbH</Authors>
+    <Company>Tributech Solutions GmbH</Company>
 
     <PackageTags>Data; Audit; Data Sharing; Tributech; DSK; Data Space Kit; IoT</PackageTags>
 
@@ -19,7 +19,7 @@
     <ProjectUrl>https://docs.tributech.io/</ProjectUrl>
     <RepositoryUrl>https://github.com/tributech-solutions/dataspacekit-api-clients</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
- 
+
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
