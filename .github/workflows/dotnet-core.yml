@@ -2,7 +2,7 @@ name: .NET Core
 
 on:
   push:
-    branches: [ 'feature/ci-build' ]
+    branches: [ 'master' ]
 
 jobs:
   publish:
@@ -28,7 +28,7 @@ jobs:
           # Format of the git tag, [*] gets replaced with actual version
           # TAG_FORMAT: # optional, default is v*
           # API key to authenticate with NuGet server
-          NUGET_KEY: oy2fc23cw2kvbzmpvvnqhq65a3rqoc7ujds246fvjyz6x4 # This key is only for testing not the real thing, don't worry ## ${{secrets.NUGET_API_KEY}}
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
           # NuGet server uri hosting the packages, defaults to https://api.nuget.org
           # NUGET_SOURCE: # optional, default is https://api.nuget.org
           # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
