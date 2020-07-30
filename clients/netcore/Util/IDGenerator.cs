@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace Tributech.Dataspace.Clients.Util
+namespace Tributech.Dsk.Api.Clients.Util
 {
     public static class IDGenerator
     {
