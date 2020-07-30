@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <PackageId>Tributech.Dsk.Api.Clients</PackageId>
-    <Version>1.6.0-rc0</Version>
+    <PackageId>Tributech.DataSpace.Clients__Test</PackageId>
+    <Version>1.6.0-rc1</Version>
 
     <Title>Tributech DSK API Clients</Title>
     <Authors>Tributech Solutions GmbH</Authors>
