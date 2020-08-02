@@ -10,3 +10,5 @@ var apiClient = new DataAPIClient(nodeUrl, authorizedHttpClient);
 // Get values within the last 7 days
 ICollection<ReadValueDoubleModel> data = await apiClient.GetValuesAsDoubleAsync(dataStreamId, DateTime.Now, DateTime.Now.AddDays(-7), fromSyncNumber: null, "asc", pageNumber: null, pageSize: null);
 ```
+
+For details, see [Program.cs](./Program.cs).
