@@ -1,18 +1,26 @@
 # Tributech DataSpace Kit API clients
 
-A collection of API clients for easy access to the DataSpace Kit.
+This repository contains a collection of API clients for easy access to the Tributech DataSpace Kit.
 
-![Overview](overview.jpg)
+The clients can be used to create a custom connector to connect a data source to the relevant Tributech Dataspace Kit endpoints.
 
-## Usage of .NET Core client
+![Integration via APIs](./assets/img/integration-via-apis.jpg)
 
-Requires netstandard2.0 or higher.
+## Available Api Clients
+- Data Api
+- Trust Api
 
-``` csharp
-var authHandler = new APIAuthHandler(tokenUrl, scope, clientId, clientSecret);
-var authorizedHttpClient = new HttpClient(authHandler);
-var apiClient = new DataAPIClient(nodeUrl, authorizedHttpClient);
+The clients are available as a NuGet package:
 
-// Get values within the last 7 days
-ICollection<ReadValueDoubleModel> data = await apiClient.GetValuesAsDoubleAsync(dataStreamId, DateTime.Now, DateTime.Now.AddDays(-7), fromSyncNumber: null, "asc", pageNumber: null, pageSize: null);
-```
+| Package | Release version |
+|-|-|
+| [Tributech.Dsk.Api.Clients](https://www.nuget.org/packages/Tributech.Dsk.Api.Client) | https://img.shields.io/nuget/v/Tributech.Dsk.Api.Clients |
+
+## Usage
+Usage examples are available in [/examples](./examples).
+
+## Contribute 
+Please report any bugs / issues that you find by opening an issue.
+
+## Need Support?
+Use the [ributech Support Center](https://tributech.atlassian.net/servicedesk/customer/portals).
