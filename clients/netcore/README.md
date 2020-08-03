@@ -7,7 +7,7 @@ The clients for .NET Core are available as a NuGet package (requires netstandard
 
 | Package | Release version |
 |-|-|
-| [Tributech.Dsk.Api.Clients](https://www.nuget.org/packages/Tributech.Dsk.Api.Clients) | https://img.shields.io/nuget/v/Tributech.Dsk.Api.Clients |
+| [Tributech.Dsk.Api.Clients](https://www.nuget.org/packages/Tributech.Dsk.Api.Clients) | ![Release version](https://img.shields.io/nuget/v/Tributech.Dsk.Api.Clients) |
 
 ### Authentication / Authorization
 You can use the included [APIAuthHandler](./APIAuthHandler.cs) as demonstrated in [the .NET Core Usage Example](../../examples/netcore).
