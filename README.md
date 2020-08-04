@@ -48,7 +48,7 @@ The **Trust Api** `/proof` and `/proofs` HTTP POST endpoints can be used to stor
 *Note: Each proof is stored tamperproof within the Distributed Ledger (Blockchain) across the Tributech DataSpace network. Consequently, each proof is assigned a unique TransactionId - which can be used to fetch the proof from the Ledger. This endpoint to retrieve the proof from the Blockchain is called ProofLocation and can be accessed through the available endpoints in the DataApi.*
 
 ### Get proofs
-A proofs can be fetched through the `/proof` HTTP GET endpoint of the **Trust Api**. A proof can also be retrieved together with the assigned values through the `/proofvalues` HTTP GET endpoint of the Trust Api.
+Proofs can be fetched through the `/proof` HTTP GET endpoint of the **Trust Api**. A proof can also be retrieved together with the assigned values through the `/proofvalues` HTTP GET endpoint of the Trust Api.
 
 ### Validate proofs
 A proof can be validated through the `/validate/proof` HTTP POST endpoint of the **Trust Api**.
