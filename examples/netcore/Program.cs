@@ -9,7 +9,7 @@ using Tributech.Dsk.Api.Clients.DataApi;
 namespace Tributech.Dataspace.ClientExamples {
     class Program {
         // Api Client Config
-        private const string nodeUrl = "http://data-api.your-node.dataspace-node.com";
+        private const string nodeUrl = "https://data-api.your-node.dataspace-node.com";
         private const string tokenUrl = "https://id.your-hub.dataspace-hub.com/connect/token";
         private const string scope = "data-api-endpoint";
         private const string clientId = "<your-node-specific-api-client>";
