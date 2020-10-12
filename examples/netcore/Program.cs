@@ -23,7 +23,7 @@ namespace Tributech.Dataspace.ClientExamples {
                 var apiClient = new DataAPIClient(nodeUrl, authorizedHttpClient);
 
                 // Get data points within the last 7 days
-                ICollection<ReadValueDoubleModel> data = await apiClient.GetValuesAsDoubleAsync(dataStreamId, DateTime.Now, DateTime.Now.AddDays(-7), "asc", pageNumber: null, pageSize: null);
+                ICollection<ReadValueDoubleModel> data = await apiClient.GetValuesAsDoubleAsync(dataStreamId, DateTime.Now.AddDays(-7), DateTime.Now, "asc", pageNumber: null, pageSize: null);
 
                 foreach(var item in data) {
                     Console.WriteLine($"{item.Timestamp}: Value {item.Values.FirstOrDefault()}");
