@@ -47,32 +47,36 @@ Essentially, you will need to provide the following parameters:
 | clientId | your-node-specific-api-client | Can be found in the Dataspace Admin (Profile -> Administration)
 | clientSecret | your-node-specific-api-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
 
+---
+
+### Use case examples
+
 _A few cases which should help to understand when to use which Api are explained following._
 
-### Store values
+#### Store values
 
 **Unless the proofs are created directly on an external device** (e.g. DataSpace Agent Edge), the **Trust Api** should be used to store values and automatically create and persist the respective proofs. The `/value` and `/values` HTTP POST endpoints of the Trust Api can be used to do so.
 
 **If however the proofs are created separately**, then the `/value` and `/values` HTTP POST endpoints of the **Data Api** can be used to only store values - the proofs are then stored manually through the `/proof` and `/proofs` HTTP POST endpoints of the Trust Api.
 
-### Get values
+#### Get values
 
 The **Data Api** provides various `/values` HTTP GET endpoints to fetch values.
 Values can also be retrieved together with the respective proof through the `/proofvalues` HTTP GET endpoint of the Trust Api.
 
 _Note: The Data Api also handles the syncing of values between DataSpace Nodes (as far as approved through the parties). The status for this syncing process is available through the Status endpoints of the Data Api._
 
-### Store proofs
+#### Store proofs
 
 The **Trust Api** `/proof` and `/proofs` HTTP POST endpoints can be used to store proofs.
 
 _Note: Each proof is stored tamperproof within the Distributed Ledger (Blockchain) across the Tributech DataSpace network. Consequently, each proof is assigned a unique TransactionId - which can be used to fetch the proof from the Ledger. This endpoint to retrieve the proof from the Blockchain is called ProofLocation and can be accessed through the available endpoints in the DataApi._
 
-### Get proofs
+#### Get proofs
 
 Proofs can be fetched through the `/proof` HTTP GET endpoint of the **Trust Api**. A proof can also be retrieved together with the assigned values through the `/proofvalues` HTTP GET endpoint of the Trust Api.
 
-### Validate proofs
+#### Validate proofs
 
 A proof can be validated through the `/validate/proof` HTTP POST endpoint of the **Trust Api**.
 
