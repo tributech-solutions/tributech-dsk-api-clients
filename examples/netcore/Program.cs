@@ -8,10 +8,17 @@ using Tributech.Dsk.Api.Clients.DataApi;
 
 namespace Tributech.Dataspace.ClientExamples {
     class Program {
-        // Api Client Config
+        // Api Client Configs:
+
+        // Your Node URL (replace your-node with the name of your node)
         private const string nodeUrl = "https://data-api.your-node.dataspace-node.com";
+        // Your Hub URL (replace your-hub with the name of your hub)
         private const string tokenUrl = "https://id.your-hub.dataspace-hub.com/connect/token";
+        // the scope setting defines what parts of an api / endpoints should be accessible
+        // in this case it is either data-api-endpoint for the Data API or data-api-endpoint trust-api-endpoint for the Trust API.
+        // The Trust API requires both scopes since it comes with the DSK Agent Integrated which passes through values to the Data API
         private const string scope = "data-api-endpoint";
+        // The following two settings can be found in the DataSpace Admin App (Profile -> Administration)
         private const string clientId = "<your-node-specific-api-client>";
         private const string clientSecret = "<your-node-specific-api-client-secret>";
 
