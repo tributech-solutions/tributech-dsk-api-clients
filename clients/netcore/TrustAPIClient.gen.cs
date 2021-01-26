@@ -50,260 +50,27 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
-        /// <summary>Get ProofLocation of a data stream for a given point in time.</summary>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream</param>
-        /// <param name="nextLastTimestamp">Specifies the point in time of which ProofLocation should be returned (format: ISO 8601)</param>
+        /// <summary>Saves a Proof.</summary>
+        /// <param name="body">The Proof and a ProofLocation without Key.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationAsync(System.Guid valueMetadataId, System.DateTimeOffset nextLastTimestamp)
+        public System.Threading.Tasks.Task<SaveProofResult> SaveProofAsync(CreateProofModel body)
         {
-            return GetProofLocationAsync(valueMetadataId, nextLastTimestamp, System.Threading.CancellationToken.None);
+            return SaveProofAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get ProofLocation of a data stream for a given point in time.</summary>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream</param>
-        /// <param name="nextLastTimestamp">Specifies the point in time of which ProofLocation should be returned (format: ISO 8601)</param>
+        /// <summary>Saves a Proof.</summary>
+        /// <param name="body">The Proof and a ProofLocation without Key.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationAsync(System.Guid valueMetadataId, System.DateTimeOffset nextLastTimestamp, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            if (nextLastTimestamp == null)
-                throw new System.ArgumentNullException("nextLastTimestamp");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocation/{valueMetadataId}/{nextLastTimestamp}");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{nextLastTimestamp}", System.Uri.EscapeDataString(nextLastTimestamp.ToString("o", System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadProofLocationModel>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get pageable ProofLocations by ValueMetadataId for a certain time range.</summary>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream</param>
-        /// <param name="from">From DateTime according to ISO 8601</param>
-        /// <param name="to">To DateTime according to ISO 8601</param>
-        /// <param name="orderBy">Order by SyncNr. Default: "asc" or empty field. Alternative: "desc"</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
-        {
-            return GetProofLocationsAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get pageable ProofLocations by ValueMetadataId for a certain time range.</summary>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream</param>
-        /// <param name="from">From DateTime according to ISO 8601</param>
-        /// <param name="to">To DateTime according to ISO 8601</param>
-        /// <param name="orderBy">Order by SyncNr. Default: "asc" or empty field. Alternative: "desc"</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations/{valueMetadataId}?");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (from != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (to != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadProofLocationModel>>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Add a single ProofLocation.</summary>
-        /// <param name="body">The ProofLocation to be created.</param>
-        /// <returns>ProofLocation created successfully.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationAsync(CreateProofLocationModel body)
-        {
-            return SaveProofLocationAsync(body, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add a single ProofLocation.</summary>
-        /// <param name="body">The ProofLocation to be created.</param>
-        /// <returns>ProofLocation created successfully.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationAsync(CreateProofLocationModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveProofResult> SaveProofAsync(CreateProofModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocation");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proof");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -315,7 +82,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -340,7 +107,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -348,30 +115,26 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                             return objectResponse_.Object;
                         }
                         else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveProofResult>("BigchainDB error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -393,24 +156,133 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add multiple ProofLocations.</summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body)
+        public System.Threading.Tasks.Task<GetProofResult> GetProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp)
         {
-            return SaveProofLocationsAsync(body, System.Threading.CancellationToken.None);
+            return GetProofAsync(valueMetadataId, timestamp, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add multiple ProofLocations.</summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<GetProofResult> GetProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proof?");
+            if (valueMetadataId != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("ValueMetadataId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (timestamp != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("Timestamp") + "=").Append(System.Uri.EscapeDataString(timestamp.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProofResult>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Proof not found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Saves multiple Proofs.</summary>
+        /// <param name="body">The Proofs and a ProofLocations without Key.
+        /// A Proof consists of Id, RootHash and Signature.
+        /// A ProofLocationWithoutKey consists of ValueMetadataId, MerkleTreeDepth and LastTimestamp.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<SaveProofResult> SaveProofsAsync(System.Collections.Generic.IEnumerable<CreateProofModel> body)
+        {
+            return SaveProofsAsync(body, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Saves multiple Proofs.</summary>
+        /// <param name="body">The Proofs and a ProofLocations without Key.
+        /// A Proof consists of Id, RootHash and Signature.
+        /// A ProofLocationWithoutKey consists of ValueMetadataId, MerkleTreeDepth and LastTimestamp.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<SaveProofResult> SaveProofsAsync(System.Collections.Generic.IEnumerable<CreateProofModel> body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proofs");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -422,7 +294,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -447,7 +319,144 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveProofResult>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveProofResult>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<SaveProofResult>("BigchainDB error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 599)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Validates a proof for a data stream (by ValueMetadataId) at a given point in time using a given public key.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">Public key used to validate the proof-signature against (optional). If not set, then the default key will be used for validation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<ValidateProofResult> ValidateProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision, ProofKind? proofKind, ValidateProofParams body)
+        {
+            return ValidateProofAsync(valueMetadataId, timestamp, precision, proofKind, body, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Validates a proof for a data stream (by ValueMetadataId) at a given point in time using a given public key.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">Public key used to validate the proof-signature against (optional). If not set, then the default key will be used for validation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<ValidateProofResult> ValidateProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision, ProofKind? proofKind, ValidateProofParams body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/proof?");
+            if (valueMetadataId != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("ValueMetadataId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (timestamp != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("Timestamp") + "=").Append(System.Uri.EscapeDataString(timestamp.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -457,28 +466,28 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<ValidateProofResult>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidateProofResult>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ValidateProofResult>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 599)
-                        {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -500,34 +509,50 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Get status about Values to be synced for a data stream, that is part of a given sync-request.</summary>
-        /// <param name="requestId">The RequestId.</param>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream.</param>
+        /// <summary>Validates multiple proofs for data streams (by ValueMetadataId) at a given point in time using a public key.</summary>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">PublicKey: Public key used to validate the proof-signature against (optional). If not set, then the default key will be used for validation.
+        ///             
+        /// Keys: The keys as a list of elements each consisting of ValueMetadataId and Timestamp (which act as unique identifier for each Proof).</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadSyncRequestSizeModel> GetStreamStatusAsync(System.Guid requestId, System.Guid valueMetadataId)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ValidateProofsResult>> ValidateProofsAsync(Precision? precision, ProofKind? proofKind, ValidateProofsParams body)
         {
-            return GetStreamStatusAsync(requestId, valueMetadataId, System.Threading.CancellationToken.None);
+            return ValidateProofsAsync(precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get status about Values to be synced for a data stream, that is part of a given sync-request.</summary>
-        /// <param name="requestId">The RequestId.</param>
-        /// <param name="valueMetadataId">The ValueMedataId of the data stream.</param>
+        /// <summary>Validates multiple proofs for data streams (by ValueMetadataId) at a given point in time using a public key.</summary>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">PublicKey: Public key used to validate the proof-signature against (optional). If not set, then the default key will be used for validation.
+        ///             
+        /// Keys: The keys as a list of elements each consisting of ValueMetadataId and Timestamp (which act as unique identifier for each Proof).</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadSyncRequestSizeModel> GetStreamStatusAsync(System.Guid requestId, System.Guid valueMetadataId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ValidateProofsResult>> ValidateProofsAsync(Precision? precision, ProofKind? proofKind, ValidateProofsParams body, System.Threading.CancellationToken cancellationToken)
         {
-            if (requestId == null)
-                throw new System.ArgumentNullException("requestId");
-    
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
+            if (body == null)
+                throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/status/request/{requestId}/metadata/{valueMetadataId}");
-            urlBuilder_.Replace("{requestId}", System.Uri.EscapeDataString(ConvertToString(requestId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/proofs?");
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -535,8 +560,11 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -561,7 +589,102 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadSyncRequestSizeModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ValidateProofsResult>>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp)
+        {
+            return GetProofWithValuesAsync(valueMetadataId, timestamp, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
+        /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
+        /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proofvalues?");
+            if (valueMetadataId != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("ValueMetadataId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (timestamp != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("Timestamp") + "=").Append(System.Uri.EscapeDataString(timestamp.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProofAndValueResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -576,13 +699,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ProblemDetails>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<ProblemDetails>("Not found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -604,706 +727,52 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Get sync status for a Subscription at Slave.</summary>
-        /// <param name="requestId">The request id of the Subscription.</param>
+        /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as byte[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadSyncStatusModel> GetSubscriptionStatusAsync(System.Guid requestId)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
         {
-            return GetSubscriptionStatusAsync(requestId, System.Threading.CancellationToken.None);
+            return SaveValueAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get sync status for a Subscription at Slave.</summary>
-        /// <param name="requestId">The request id of the Subscription.</param>
+        /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as byte[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadSyncStatusModel> GetSubscriptionStatusAsync(System.Guid requestId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (requestId == null)
-                throw new System.ArgumentNullException("requestId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/status/subscription/{requestId}");
-            urlBuilder_.Replace("{requestId}", System.Uri.EscapeDataString(ConvertToString(requestId, System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadSyncStatusModel>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get sync status for a Request at Master.</summary>
-        /// <param name="requestId">The request id.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadSyncStatusModel> GetRequestStatusAsync(System.Guid requestId)
-        {
-            return GetRequestStatusAsync(requestId, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get sync status for a Request at Master.</summary>
-        /// <param name="requestId">The request id.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadSyncStatusModel> GetRequestStatusAsync(System.Guid requestId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (requestId == null)
-                throw new System.ArgumentNullException("requestId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/status/request/{requestId}");
-            urlBuilder_.Replace("{requestId}", System.Uri.EscapeDataString(ConvertToString(requestId, System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadSyncStatusModel>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get raw values of a data stream as byte[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueByteModel>> GetRawValuesAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
-        {
-            return GetRawValuesAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get raw values of a data stream as byte[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueByteModel>> GetRawValuesAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/{valueMetadataId}?");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (from != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (to != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueByteModel>>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get raw values of a data stream as byte[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueByteModel>> GetValuesAsByteAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
-        {
-            return GetValuesAsByteAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get raw values of a data stream as byte[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueByteModel>> GetValuesAsByteAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/byte/{valueMetadataId}?");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (from != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (to != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueByteModel>>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get values of a data stream decoded as base64 string</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueStringModel>> GetValuesAsStringAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
-        {
-            return GetValuesAsStringAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get values of a data stream decoded as base64 string</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueStringModel>> GetValuesAsStringAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/string/{valueMetadataId}?");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (from != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (to != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueStringModel>>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Get values of a data stream decoded as double[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesAsDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
-        {
-            return GetValuesAsDoubleAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get values of a data stream decoded as double[]</summary>
-        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
-        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' after the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
-        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
-        /// (format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt;= To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesAsDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
-        {
-            if (valueMetadataId == null)
-                throw new System.ArgumentNullException("valueMetadataId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/double/{valueMetadataId}?");
-            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (from != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (to != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueDoubleModel>>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <summary>Add a single value to the data stream as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as byte[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueByteModel body)
-        {
-            return AddValueAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add a single value to the data stream as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as byte[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1317,7 +786,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1342,7 +811,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Int32ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1352,28 +821,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1395,34 +870,52 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add a single value to the data stream as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as byte[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as byte[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueByteModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
         {
-            return AddValueAsByteAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValueAsByteAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add a single value to the data stream as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as byte[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as byte[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/byte?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1436,7 +929,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1461,7 +954,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Int32ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1471,28 +964,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1514,34 +1013,52 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add a single value to the data stream as base64 string.</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as a base64 string.</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as base64 string and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as base64 string.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsBase64Async(DuplicateValueBehavior? duplicateValueBehavior, CreateValueStringModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueStringModel body)
         {
-            return AddValueAsBase64Async(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValueAsStringAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add a single value to the data stream as base64 string.</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as a base64 string.</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as base64 string and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as base64 string.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsBase64Async(DuplicateValueBehavior? duplicateValueBehavior, CreateValueStringModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueStringModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/string?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1555,7 +1072,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1580,7 +1097,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Int32ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1590,28 +1107,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1633,34 +1156,52 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add a single value to the data stream as double[].</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as double[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as double[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueDoubleModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body)
         {
-            return AddValueAsDoubleAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValueAsDoubleAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add a single value to the data stream as double[].</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The Value to be created, encoded as double[].</param>
-        /// <returns>Value created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The Value to be created as double[].
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Int32ReadCreateResponseModel> AddValueAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, CreateValueDoubleModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/double?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1674,7 +1215,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1699,7 +1240,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Int32ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1709,28 +1250,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1752,31 +1299,49 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add multiple values to the data stream, each encoded as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as byte[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
         {
-            return AddValuesAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add multiple values to the data stream, each encoded as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as byte[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1790,7 +1355,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1815,7 +1380,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1825,28 +1390,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1868,31 +1439,49 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add multiple values to the data stream, each encoded as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as byte[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
         {
-            return AddValuesAsByteAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsByteAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add multiple values to the data stream, each encoded as byte[]</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as byte[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/byte?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1906,7 +1495,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -1931,7 +1520,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1941,28 +1530,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1984,31 +1579,49 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add multiple values to the data stream, each encoded as base64 string.</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as base64 string</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as base64 string and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsBase64Async(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueStringModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body)
         {
-            return AddValuesAsBase64Async(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsStringAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add multiple values to the data stream, each encoded as base64 string.</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as base64 string</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as base64 string and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsBase64Async(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/string?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -2022,7 +1635,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -2047,7 +1660,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2057,28 +1670,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -2100,31 +1719,49 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Add multiple values to the data stream, each encoded as double[].</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as double[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as double[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body)
         {
-            return AddValuesAsDoubleAsync(duplicateValueBehavior, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsDoubleAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Add multiple values to the data stream, each encoded as double[].</summary>
-        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
-        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
-        /// <param name="body">The list of Values to be created, with each encoded as double[]</param>
-        /// <returns>Values created successfully. Returns the number of values added to the data stream.</returns>
+        /// <summary>Saves multiple values as double[] and creates a proof using the integrated trust-agent.</summary>
+        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
+        /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
+        /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
+        /// Default = SHA256_RSA2048_PSS.
+        /// Available Values: 0 (=SHA256_RSA2048_PSS), 1 (=SHA256_RSA2048_PKCS1)</param>
+        /// <param name="body">The list of Values to be created.
+        /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> AddValuesAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/double?");
-            if (duplicateValueBehavior != null) 
+            if (skipUniqueConstraintViolation != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -2138,7 +1775,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -2163,7 +1800,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2173,28 +1810,34 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Input-validation failed", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 500)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_).ConfigureAwait(false);
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unexpected exception occurred", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 589)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SaveValueCreateProofResult>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new ApiException<SaveValueCreateProofResult>("Proof storing error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 599)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                            throw new ApiException("Duplicate key value violates unique constraint.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -2320,46 +1963,107 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadProofLocationModel 
+    public partial class Proof 
     {
-        /// <summary>The guid of the data strem to which the ProofLocation belgongs.</summary>
+        /// <summary>ID that uniquely identifies this specific proof. &lt;br /&gt;
+        /// When saving a new proof, a new uniqe Guid should be used</summary>
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid Id { get; set; }
+    
+        /// <summary>Root hash of the mekle-tree (as BASE64 string).</summary>
+        [Newtonsoft.Json.JsonProperty("rootHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public byte[] RootHash { get; set; }
+    
+        /// <summary>Signature of the RootHash (as BASE64 string).</summary>
+        [Newtonsoft.Json.JsonProperty("signature", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public byte[] Signature { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ProofLocationWithoutKey 
+    {
+        /// <summary>ValueMetadataID of the data stream to which the proof belongs</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>LastTimestamp of the last Value that is part of the the proof.</summary>
-        [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset LastTimestamp { get; set; }
-    
-        /// <summary>The timestamp at which the ProofLocation was created on the server.</summary>
-        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreatedAt { get; set; }
-    
-        /// <summary>Depth of the binary merkle-tree.</summary>
+        /// <summary>Depth of the binary merkle tree &lt;br /&gt;
+        /// The number of Values that are covered by the tree = 2 ^ MerkleTreeDepth</summary>
         [Newtonsoft.Json.JsonProperty("merkleTreeDepth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int MerkleTreeDepth { get; set; }
     
-        /// <summary>Uri to retrieve the ProofLocation from the Trust API.</summary>
-        [Newtonsoft.Json.JsonProperty("uri", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Uri { get; set; }
+        /// <summary>'Timestamp' of the last data stream Value that is still part of this proof</summary>
+        [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset LastTimestamp { get; set; }
     
-        /// <summary>The synchronisation sequence number.
-        /// The sequence defines a order for the ProofLocations within a ValueMetadata group
-        /// and is used for detection data-gaps on a receiving Node.</summary>
-        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long SyncNr { get; set; }
     
-        /// <summary>The size of the ProofLocation in byte.</summary>
-        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Size { get; set; }
+    }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class CreateProofModel 
+    {
+        [Newtonsoft.Json.JsonProperty("proof", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Proof Proof { get; set; }
     
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("proofLocationWithoutKey", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ProofLocationWithoutKey ProofLocationWithoutKey { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum SaveProofResultEnumeration
+    {
+        _0 = 0,
+    
+        _1 = 1,
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class SaveProofResult 
+    {
+        [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SaveProofResultEnumeration ResultCode { get; set; }
+    
+        /// <summary>Human readable description of the result</summary>
+        [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ResultMessage { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ProofLocation 
+    {
+        /// <summary>ValueMetadataId of the data stream the proof belongs to.</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>Depth of the binary merkle tree.</summary>
+        [Newtonsoft.Json.JsonProperty("merkleTreeDepth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int MerkleTreeDepth { get; set; }
+    
+        /// <summary>Timestamp of the last value that is still part of the proof.</summary>
+        [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset LastTimestamp { get; set; }
+    
+        /// <summary>BigchainDB Transaction ID</summary>
+        [Newtonsoft.Json.JsonProperty("transactionId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string TransactionId { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class GetProofResult 
+    {
+        [Newtonsoft.Json.JsonProperty("proof", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Proof Proof { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("proofLocation", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ProofLocation ProofLocation { get; set; }
     
     
     }
@@ -2382,9 +2086,6 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Instance { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("extensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> Extensions { get; set; }
-    
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
     
         [Newtonsoft.Json.JsonExtensionData]
@@ -2398,376 +2099,193 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CreateProofLocationModel 
+    public enum Precision
     {
-        /// <summary>The guid of the data stream to which the ProofLocation belgongs.</summary>
-        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid ValueMetadataId { get; set; }
+        _1 = 1,
     
-        /// <summary>The timestamp at which the last Value which is part of the proof was recorded on the trust agent/edge device.
-        /// Only precision up to microseconds is allowed, no nanoseconds!
-        /// e.g.
-        /// 2020-08-03T12:41:01.2074910Z -&gt; OK
-        /// 2020-08-03T12:41:01.2074913Z -&gt; not allowed</summary>
-        [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset LastTimestamp { get; set; }
-    
-        /// <summary>The depth of the binary merkle tree of the ProofLocation.</summary>
-        [Newtonsoft.Json.JsonProperty("merkleTreeDepth", Required = Newtonsoft.Json.Required.Always)]
-        public int MerkleTreeDepth { get; set; }
-    
-        /// <summary>The Uri which specifies the location of the proof in the Trust API.</summary>
-        [Newtonsoft.Json.JsonProperty("uri", Required = Newtonsoft.Json.Required.AllowNull)]
-        public string Uri { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
+        _2 = 2,
     
     }
     
-    /// <summary>Response for insert operations.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class UInt64ReadCreateResponseModel 
+    public enum ProofKind
     {
-        /// <summary>The number of value(s) added to the data stream.
-        /// (e.g. can be less than actual number fo values if skipUniqueConstraintViolation=true)</summary>
-        [Newtonsoft.Json.JsonProperty("insertedCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long InsertedCount { get; set; }
+        _0 = 0,
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        _1 = 1,
     
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ValidateProofParams 
+    {
+        /// <summary>X509 Public key as string</summary>
+        [Newtonsoft.Json.JsonProperty("publicKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PublicKey { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ValidationProblemDetails 
+    public enum ValidateProofResultEnumeration
     {
-        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.ICollection<string>> Errors { get; set; }
+        _0 = 0,
     
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
+        _1 = 1,
     
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
+        _2 = 2,
     
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Status { get; set; }
+        _3 = 3,
     
-        [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Detail { get; set; }
+        _4 = 4,
     
-        [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Instance { get; set; }
+        _5 = 5,
     
-        [Newtonsoft.Json.JsonProperty("extensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> Extensions { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
+        _6 = 6,
     
     }
     
-    /// <summary>Response model for InternalServerError.
-    /// e.g. for Exceptions</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadErrorResponseModel 
+    public partial class ValidateProofResult 
     {
-        /// <summary>Information about the error that occured.</summary>
-        [Newtonsoft.Json.JsonProperty("error", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Error { get; set; }
+        /// <summary>Indicates whether the proof was found</summary>
+        [Newtonsoft.Json.JsonProperty("validProofExists", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool ValidProofExists { get; set; }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        /// <summary>Textual validation result</summary>
+        [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ResultMessage { get; set; }
     
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValidateProofResultEnumeration ResultCode { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadSyncRequestSizeModel 
+    public partial class ValueKey 
     {
-        /// <summary>ID of the data stream</summary>
+        /// <summary>ValueMetadataID of the data stream to validate</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>ID of the Request</summary>
-        [Newtonsoft.Json.JsonProperty("requestId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid RequestId { get; set; }
-    
-        /// <summary>Point in time where the last sync was performed</summary>
-        [Newtonsoft.Json.JsonProperty("lastSynced", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset LastSynced { get; set; }
-    
-        /// <summary>Cumulated size of all Values of Request/Subscription.</summary>
-        [Newtonsoft.Json.JsonProperty("totalSize", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TotalSize { get; set; }
-    
-        /// <summary>Total number of Values of Request/Subscription.</summary>
-        [Newtonsoft.Json.JsonProperty("totalCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TotalCount { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
-    
-    }
-    
-    /// <summary>Sync status for Request/Subscription.</summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadSyncStatusModel 
-    {
-        /// <summary>Number of Values transmitted.</summary>
-        [Newtonsoft.Json.JsonProperty("transmittedSize", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TransmittedSize { get; set; }
-    
-        /// <summary>Cumulated size of all transmitted Values.</summary>
-        [Newtonsoft.Json.JsonProperty("transmittedCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TransmittedCount { get; set; }
-    
-        /// <summary>Total number of Values of Request/Subscription.</summary>
-        [Newtonsoft.Json.JsonProperty("totalSize", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TotalSize { get; set; }
-    
-        /// <summary>Cumulated size of all Values of Request/Subscription.</summary>
-        [Newtonsoft.Json.JsonProperty("totalCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long TotalCount { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadValueByteModel 
-    {
-        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
-        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid ValueMetadataId { get; set; }
-    
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        /// <summary>Point in time of which the proof should be validated / fetched</summary>
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        /// <summary>The timestamp at which the Value was created on the server.</summary>
-        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreatedAt { get; set; }
     
-        /// <summary>The actual data stored in this 'Value'</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Values { get; set; }
+    }
     
-        /// <summary>The synchronisation sequence number. &lt;br /&gt;
-        /// The sequence defines a order for the Values within a ValueMetadata group
-        /// and is used for detection data-gaps on a receiving Node.</summary>
-        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long SyncNr { get; set; }
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ValidateProofsParams 
+    {
+        /// <summary>X509 Public key as string</summary>
+        [Newtonsoft.Json.JsonProperty("publicKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PublicKey { get; set; }
     
-        /// <summary>The size of the 'Values' in byte.</summary>
-        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Size { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        /// <summary>The keys as a list of elements each consisting of ValueMetadataId and Timestamp (which act as unique identifier for each Proof).</summary>
+        [Newtonsoft.Json.JsonProperty("keys", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ValueKey> Keys { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadValueStringModel 
+    public partial class ValidateProofsResult 
     {
-        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValueKey Key { get; set; }
+    
+        /// <summary>Indicates whether the proof was found</summary>
+        [Newtonsoft.Json.JsonProperty("validProofExists", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool ValidProofExists { get; set; }
+    
+        /// <summary>Textual validation result</summary>
+        [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ResultMessage { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValidateProofResultEnumeration ResultCode { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class Value 
+    {
+        /// <summary>Raw value data</summary>
+        [Newtonsoft.Json.JsonProperty("rawValues", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public byte[] RawValues { get; set; }
+    
+        /// <summary>ValueMetadataID of the data stream to validate</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        /// <summary>Point in time of which the proof should be validated / fetched</summary>
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset Timestamp { get; set; }
-    
-        /// <summary>The timestamp at which the Value was created on the server.</summary>
-        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreatedAt { get; set; }
-    
-        /// <summary>The actual data stored in this 'Value'</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Values { get; set; }
-    
-        /// <summary>The synchronisation sequence number. &lt;br /&gt;
-        /// The sequence defines a order for the Values within a ValueMetadata group
-        /// and is used for detection data-gaps on a receiving Node.</summary>
-        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long SyncNr { get; set; }
-    
-        /// <summary>The size of the 'Values' in byte.</summary>
-        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Size { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ReadValueDoubleModel 
+    public partial class GetProofAndValueResult 
     {
-        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
-        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid ValueMetadataId { get; set; }
+        [Newtonsoft.Json.JsonProperty("proof", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Proof Proof { get; set; }
     
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
-        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Timestamp { get; set; }
+        [Newtonsoft.Json.JsonProperty("proofLocation", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ProofLocation ProofLocation { get; set; }
     
-        /// <summary>The timestamp at which the Value was created on the server.</summary>
-        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset CreatedAt { get; set; }
-    
-        /// <summary>The actual data stored in this 'Value'</summary>
         [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<double> Values { get; set; }
+        public System.Collections.Generic.ICollection<Value> Values { get; set; }
     
-        /// <summary>The synchronisation sequence number. &lt;br /&gt;
-        /// The sequence defines a order for the Values within a ValueMetadata group
-        /// and is used for detection data-gaps on a receiving Node.</summary>
-        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long SyncNr { get; set; }
-    
-        /// <summary>The size of the 'Values' in byte.</summary>
-        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Size { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public enum DuplicateValueBehavior
-    {
-        [System.Runtime.Serialization.EnumMember(Value = @"skip")]
-        Skip = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"update")]
-        Update = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"error")]
-        Error = 2,
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class CreateValueByteModel 
     {
-        /// <summary>The guid of the ValueMetadata entry to which the Value belgongs.</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.
-        /// Only precision up to microseconds is allowed, no nanoseconds!
-        /// e.g.
-        /// 2020-08-03T12:41:01.2074910Z -&gt; OK
-        /// 2020-08-03T12:41:01.2074913Z -&gt; not allowed</summary>
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        /// <summary>Values as byte[] (e.g. [104, 101, 108, 108, 111]).
-        /// or Values as double [] (e.g. [5,6].
-        /// or Values as base64 encoded string (e.g. "aGVsbG8=").</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public byte[] Values { get; set; }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
     
     
     }
     
-    /// <summary>Response for insert operations.</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Int32ReadCreateResponseModel 
+    public enum SaveValueCreateProofResultEnumeration
     {
-        /// <summary>The number of value(s) added to the data stream.
-        /// (e.g. can be less than actual number fo values if skipUniqueConstraintViolation=true)</summary>
-        [Newtonsoft.Json.JsonProperty("insertedCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int InsertedCount { get; set; }
+        _0 = 0,
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+        _1 = 1,
     
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        _2 = 2,
+    
+        _3 = 3,
+    
+        _4 = 4,
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class SaveValueCreateProofResult 
+    {
+        [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SaveValueCreateProofResultEnumeration ResultCode { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ResultMessage { get; set; }
     
     
     }
@@ -2775,34 +2293,19 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class CreateValueStringModel 
     {
-        /// <summary>The guid of the ValueMetadata entry to which the Value belgongs.</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.
-        /// Only precision up to microseconds is allowed, no nanoseconds!
-        /// e.g.
-        /// 2020-08-03T12:41:01.2074910Z -&gt; OK
-        /// 2020-08-03T12:41:01.2074913Z -&gt; not allowed</summary>
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        /// <summary>Values as byte[] (e.g. [104, 101, 108, 108, 111]).
-        /// or Values as double [] (e.g. [5,6].
-        /// or Values as base64 encoded string (e.g. "aGVsbG8=").</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Values { get; set; }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
     
     
     }
@@ -2810,34 +2313,19 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class CreateValueDoubleModel 
     {
-        /// <summary>The guid of the ValueMetadata entry to which the Value belgongs.</summary>
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.
-        /// Only precision up to microseconds is allowed, no nanoseconds!
-        /// e.g.
-        /// 2020-08-03T12:41:01.2074910Z -&gt; OK
-        /// 2020-08-03T12:41:01.2074913Z -&gt; not allowed</summary>
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        /// <summary>Values as byte[] (e.g. [104, 101, 108, 108, 111]).
-        /// or Values as double [] (e.g. [5,6].
-        /// or Values as base64 encoded string (e.g. "aGVsbG8=").</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<double> Values { get; set; }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
     
     
     }
