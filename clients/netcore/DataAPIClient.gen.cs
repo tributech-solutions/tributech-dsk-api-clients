@@ -2382,6 +2382,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Instance { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("extensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> Extensions { get; set; }
+    
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
     
         [Newtonsoft.Json.JsonExtensionData]
@@ -2472,6 +2475,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
     
         [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Instance { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("extensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> Extensions { get; set; }
     
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
     
@@ -2699,11 +2705,14 @@ namespace Tributech.Dsk.Api.Clients.DataApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum DuplicateValueBehavior
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"skip")]
+        Skip = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"update")]
+        Update = 1,
     
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"error")]
+        Error = 2,
     
     }
     
