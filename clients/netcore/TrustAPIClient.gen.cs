@@ -2029,9 +2029,11 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum SaveProofResultEnumeration
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"Success")]
+        Success = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_BigchainDBError")]
+        Fail_BigchainDBError = 1,
     
     }
     
@@ -2039,6 +2041,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     public partial class SaveProofResult 
     {
         [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SaveProofResultEnumeration ResultCode { get; set; }
     
         /// <summary>Human readable description of the result</summary>
@@ -2109,18 +2112,22 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum Precision
     {
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"MicroSeconds")]
+        MicroSeconds = 0,
     
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"NanoSeconds")]
+        NanoSeconds = 1,
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum ProofKind
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"SHA256_RSA2048_PSS")]
+        SHA256_RSA2048_PSS = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"SHA256_RSA2048_PKCS1")]
+        SHA256_RSA2048_PKCS1 = 1,
     
     }
     
@@ -2137,19 +2144,26 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum ValidateProofResultEnumeration
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"Success")]
+        Success = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ValuesNotFound")]
+        Fail_ValuesNotFound = 1,
     
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofLocationNotFound")]
+        Fail_ProofLocationNotFound = 2,
     
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofNotFound")]
+        Fail_ProofNotFound = 3,
     
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_RootHashMismatch")]
+        Fail_RootHashMismatch = 4,
     
-        _5 = 5,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_SignatureMismatch")]
+        Fail_SignatureMismatch = 5,
     
-        _6 = 6,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_InvalidPublicKey")]
+        Fail_InvalidPublicKey = 6,
     
     }
     
@@ -2165,6 +2179,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         public string ResultMessage { get; set; }
     
         [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ResultCode { get; set; }
     
     
@@ -2213,6 +2228,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         public string ResultMessage { get; set; }
     
         [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ResultCode { get; set; }
     
     
@@ -2254,11 +2270,14 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum DuplicateValueBehavior
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"skip")]
+        Skip = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"update")]
+        Update = 1,
     
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"error")]
+        Error = 2,
     
     }
     
@@ -2291,15 +2310,20 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public enum SaveValueCreateProofResultEnumeration
     {
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"Success")]
+        Success = 0,
     
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_InvalidValuesCount")]
+        Fail_InvalidValuesCount = 1,
     
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_DifferingMetadataId")]
+        Fail_DifferingMetadataId = 2,
     
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofStoreError")]
+        Fail_ProofStoreError = 3,
     
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_DataApiError")]
+        Fail_DataApiError = 4,
     
     }
     
@@ -2307,6 +2331,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     public partial class SaveValueCreateProofResult 
     {
         [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SaveValueCreateProofResultEnumeration ResultCode { get; set; }
     
         [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
