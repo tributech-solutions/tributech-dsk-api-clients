@@ -625,20 +625,22 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp)
+        public System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision)
         {
-            return GetProofWithValuesAsync(valueMetadataId, timestamp, System.Threading.CancellationToken.None);
+            return GetProofWithValuesAsync(valueMetadataId, timestamp, precision, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
+        /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<GetProofAndValueResult> GetProofWithValuesAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proofvalues?");
@@ -649,6 +651,10 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             if (timestamp != null) 
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("Timestamp") + "=").Append(System.Uri.EscapeDataString(timestamp.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (precision != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -1163,7 +1169,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="duplicateValueBehavior">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1180,7 +1187,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="duplicateValueBehavior">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
