@@ -728,7 +728,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -738,14 +739,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
         {
-            return SaveValueAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValueAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -755,16 +757,16 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -871,7 +873,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -881,14 +884,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueByteModel body)
         {
-            return SaveValueAsByteAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValueAsByteAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves a value as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -898,16 +902,16 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/byte?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1014,7 +1018,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves a value as base64 string and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1024,14 +1029,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueStringModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueStringModel body)
         {
-            return SaveValueAsStringAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValueAsStringAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves a value as base64 string and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1041,16 +1047,16 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueStringModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueStringModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/string?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1157,7 +1163,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Default = false, if true, no UniqueConstraint keys will be skipped</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1167,14 +1173,14 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body)
         {
-            return SaveValueAsDoubleAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValueAsDoubleAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves a value as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Default = false, if true, no UniqueConstraint keys will be skipped</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1184,16 +1190,16 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
     
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/double?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1300,7 +1306,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1310,14 +1317,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
         {
-            return SaveValuesAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1327,13 +1335,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1440,7 +1448,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1450,14 +1459,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body)
         {
-            return SaveValuesAsByteAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsByteAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves multiple values as byte[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1467,13 +1477,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/byte?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1580,7 +1590,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves multiple values as base64 string and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1590,14 +1601,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body)
         {
-            return SaveValuesAsStringAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsStringAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves multiple values as base64 string and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1607,13 +1619,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/string?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -1720,7 +1732,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <summary>Saves multiple values as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1730,14 +1743,15 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body)
+        public System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body)
         {
-            return SaveValuesAsDoubleAsync(skipUniqueConstraintViolation, precision, proofKind, body, System.Threading.CancellationToken.None);
+            return SaveValuesAsDoubleAsync(duplicateValueBehavior, precision, proofKind, body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Saves multiple values as double[] and creates a proof using the integrated trust-agent.</summary>
-        /// <param name="skipUniqueConstraintViolation">Default = false, if true, no UniqueConstraint keys will be skipped</param>
+        /// <param name="duplicateValueBehavior">Define what course of action is taken for values with duplicate timestamps.&lt;br /&gt;
+        /// (default: Error, Skip: value with existing timestamp is not inserted, Update: value with existing timestamp will be overwritten, Error: value with existing timestamp causes error 599)</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
         /// <param name="proofKind">Specifies the kind of a signed merkle-tree root hash.
         /// It gives a hint which algorithms have been used in order to create the proof to be able to verify it accordingly.
@@ -1747,13 +1761,13 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// A Value is consisting of ValueMetadataId, Timestamp and Values</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(bool? skipUniqueConstraintViolation, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(DuplicateValueBehavior? duplicateValueBehavior, Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/double?");
-            if (skipUniqueConstraintViolation != null) 
+            if (duplicateValueBehavior != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("skipUniqueConstraintViolation") + "=").Append(System.Uri.EscapeDataString(ConvertToString(skipUniqueConstraintViolation, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("duplicateValueBehavior") + "=").Append(System.Uri.EscapeDataString(ConvertToString(duplicateValueBehavior, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             if (precision != null) 
             {
@@ -2240,6 +2254,17 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Value> Values { get; set; }
     
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.3.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum DuplicateValueBehavior
+    {
+        _0 = 0,
+    
+        _1 = 1,
+    
+        _2 = 2,
     
     }
     
