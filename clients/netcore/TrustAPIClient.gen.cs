@@ -2100,14 +2100,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Instance { get; set; }
     
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("extensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, object> Extensions { get; set; }
     
     
     }
@@ -2279,11 +2273,17 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
         public byte[] Values { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+    
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
     
     
     }
@@ -2326,11 +2326,17 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
         public string Values { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+    
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
     
     
     }
@@ -2346,11 +2352,17 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Timestamp { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.AllowNull)]
         public System.Collections.Generic.ICollection<double> Values { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("additionalProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; }
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+    
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
     
     
     }
