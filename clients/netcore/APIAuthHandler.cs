@@ -32,6 +32,16 @@ namespace Tributech.Dsk.Api.Clients {
 
 		private readonly object _lockobj = new object();
 
+		/// <summary>
+		/// Creates an instance of the APIAuthHandler for access to the DSK APIs.
+		/// </summary>
+		/// <param name="authUrl">Your Hub URL (e.g. https://id.your-hub.dataspace-hub.com/connect/token, replace your-hub with the name of your hub)</param>
+		/// <param name="scope">the scope setting defines what parts of an api / endpoints should be accessible
+		/// in this case it is either data-api-endpoint for the Data API or data-api-endpoint trust-api-endpoint for the Trust API.
+		/// The Trust API requires both scopes since it comes with the DSK Agent Integrated which passes through values to the Data API.
+		/// </param>
+		/// <param name="clientId">Your client id for authentication -> can be found in the DataSpace Admin App (Profile -> Administration)</param>
+		/// <param name="clientSecret">Your client id for authentication -> can be found in the DataSpace Admin App (Profile -> Administration)</param>
 		public APIAuthHandler(string authUrl, string scope, string clientId, string clientSecret)
 		:this(authUrl, scope, clientId, clientSecret, new HttpClientHandler()) { }
 
