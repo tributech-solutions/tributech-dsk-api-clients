@@ -42,9 +42,9 @@ Essentially, you will need to provide the following parameters:
 | Parameter | Value | Remark |
 |-|-|-|
 | tokenUrl | https://auth.your-hub.dataspace-hub.com/auth/realms/your-node/protocol/openid-connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
-| scope | profile / email / data-api / trust-api / node-id | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api-endpoint (Data API) or data-api-endpoint and trust-api-endpoint (Trust API) |
-| clientId | your-node-specific-api-client | Can be found in the Dataspace Admin (Profile -> Administration)
-| clientSecret | your-node-specific-api-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
+| scope | profile / email / data-api / trust-api / node-id | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api (Data API) or data-api and trust-api (Trust API) |
+| clientId | your-api-specific-client-id | Can be found in the Dataspace Admin (Profile -> Administration)
+| clientSecret | your-api-specific-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
 
 ---
 
@@ -85,7 +85,7 @@ A proof can be validated through the `/validate/proof` HTTP POST endpoint of the
 
 Usage examples for the clients are available in [/examples](./examples).
 
-You can inspect the availabe endpoints for the Data Api and Trust Api through Swagger. Please follow the guide on [docs.tributech.io](https://docs.tributech.io/apis/apis-data-api/).
+You can inspect the availabe endpoints for the Data Api and Trust Api through Swagger. Please follow the guide on [docs.tributech.io](https://docs.tributech.io/integration/node/swagger-ui-authorization/).
 
 ---
 
