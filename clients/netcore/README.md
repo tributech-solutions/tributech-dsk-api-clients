@@ -22,9 +22,9 @@ You will need to provide the following parameters:
 | Parameter | Value | Remark |
 |-|-|-|
 | tokenUrl | https://auth.your-hub.dataspace-hub.com/auth/realms/your-node/protocol/openid-connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
-| scope | data-api-endpoint / trust-api-endpoint | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api-endpoint (Data API) or data-api-endpoint and trust-api-endpoint (Trust API) |
-| clientId | your-node-specific-api-client | Can be found in the Dataspace Admin (Profile -> Administration)
-| clientSecret | your-node-specific-api-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
+| scope | profile / email / data-api / trust-api / node-id | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api (Data API) or data-api and trust-api (Trust API) |
+| clientId | your-api-specific-client-id | Can be found in the Dataspace Admin (Profile -> Administration)
+| clientSecret |your-api-specific-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
 
 This authHandler instance can then be used to create a HttpClient
 
