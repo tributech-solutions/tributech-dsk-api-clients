@@ -21,7 +21,7 @@ var authHandler = new APIAuthHandler(tokenUrl, scope, clientId, clientSecret);
 You will need to provide the following parameters:
 | Parameter | Value | Remark |
 |-|-|-|
-| tokenUrl | https://id.your-hub.dataspace-hub.com/connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
+| tokenUrl | https://auth.your-hub.dataspace-hub.com/auth/realms/your-node/protocol/openid-connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
 | scope | data-api-endpoint / trust-api-endpoint | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api-endpoint (Data API) or data-api-endpoint and trust-api-endpoint (Trust API) |
 | clientId | your-node-specific-api-client | Can be found in the Dataspace Admin (Profile -> Administration)
 | clientSecret | your-node-specific-api-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
