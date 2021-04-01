@@ -38,7 +38,7 @@ Create a DataAPIClient or TrustAPIClient using the authorizedHttpClient from the
 
 | Parameter | Value                                                                                              | Remark                                                                    |
 | --------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| baseUrl   | http://data-api.your-node.dataspace-node.com / http://trust-layer-api.your-node.dataspace-node.com | Data Api / Trust Api Endpoint Url for the node you wish to integrate with |
+| baseUrl   | http://data-api.your-node.dataspace-node.com / http://trust-api.your-node.dataspace-node.com | Data Api / Trust Api Endpoint Url for the node you wish to integrate with |
 
 ```csharp
 var apiClient = new DataAPIClient(baseUrl, authorizedHttpClient);

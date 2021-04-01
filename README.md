@@ -36,14 +36,13 @@ The Tributech DataSpace Kit provides two APIs:
 ### Authentication / Authorization
 
 You will need to to provide proper authorization in order to access the APIs. You can do this through client credentials authentication through the Identity Server deployed at the hub of your ecoystem.
-
 Check out [the example for how to do this in C#](./examples/netcore) through the ready to use [ApiAuthHandler](./clients/netcore/APIAuthHandler.cs) which we provide. Also read the detailed guide for usage of the [.NET Core clients](./clients/netcore) for more info.
 
 Essentially, you will need to provide the following parameters:
 | Parameter | Value | Remark |
 |-|-|-|
-| tokenUrl | https://id.your-hub.dataspace-hub.com/connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
-| scope | data-api-endpoint / trust-api-endpoint | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api-endpoint (Data API) or data-api-endpoint and trust-api-endpoint (Trust API) |
+| tokenUrl | https://auth.your-hub.dataspace-hub.com/auth/realms/your-node/protocol/openid-connect/token | Url to retrieve the access token from the dataspace hub Identity Server |
+| scope | profile / email / data-api / trust-api / node-id | Defines the scope of what can be accessed: Depending on which Api you wish to access either data-api-endpoint (Data API) or data-api-endpoint and trust-api-endpoint (Trust API) |
 | clientId | your-node-specific-api-client | Can be found in the Dataspace Admin (Profile -> Administration)
 | clientSecret | your-node-specific-api-client-secret | Can be found in the Dataspace Admin (Profile -> Administration)
 
