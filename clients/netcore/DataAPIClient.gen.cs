@@ -278,6 +278,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveProofResult> SaveProofsAsync(System.Collections.Generic.IEnumerable<CreateProofModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proofs");
     
@@ -395,6 +398,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<ValidateProofResult> ValidateProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision, ProofKind? proofKind, ValidateProofParams body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/proof?");
             if (valueMetadataId != null)
@@ -1422,6 +1428,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/byte?");
             if (precision != null)
@@ -1556,6 +1565,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/string?");
             if (precision != null)
@@ -1690,6 +1702,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/double?");
             if (precision != null)
@@ -1977,6 +1992,11 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Value> Values { get; set; }
     
+        [System.Runtime.Serialization.EnumMember(Value = @"Update")]
+        Update = 1,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"Error")]
+        Error = 2,
     
     }
     
@@ -2248,8 +2268,11 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ResultCode { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; }
     
-    }
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.4.3.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class Value 
@@ -2317,7 +2340,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             Result = result;
         }
     }
-
 }
 
 #pragma warning restore 1591

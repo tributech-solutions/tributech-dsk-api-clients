@@ -66,6 +66,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveProofResult> SaveProofAsync(CreateProofModel body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proof");
     
@@ -278,6 +281,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveProofResult> SaveProofsAsync(System.Collections.Generic.IEnumerable<CreateProofModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/proofs");
     
@@ -395,6 +401,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<ValidateProofResult> ValidateProofAsync(System.Guid? valueMetadataId, System.DateTimeOffset? timestamp, Precision? precision, ProofKind? proofKind, ValidateProofParams body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/proof?");
             if (valueMetadataId != null)
@@ -533,6 +542,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ValidateProofsResult>> ValidateProofsAsync(Precision? precision, ProofKind? proofKind, ValidateProofsParams body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/proofs?");
             if (precision != null)
@@ -752,6 +764,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsync(Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value?");
             if (precision != null)
@@ -886,6 +901,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsByteAsync(Precision? precision, ProofKind? proofKind, CreateValueByteModel body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/byte?");
             if (precision != null)
@@ -1020,6 +1038,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsStringAsync(Precision? precision, ProofKind? proofKind, CreateValueStringModel body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/string?");
             if (precision != null)
@@ -1154,6 +1175,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValueAsDoubleAsync(Precision? precision, ProofKind? proofKind, CreateValueDoubleModel body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/value/double?");
             if (precision != null)
@@ -1288,6 +1312,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values?");
             if (precision != null)
@@ -1422,6 +1449,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsByteAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueByteModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/byte?");
             if (precision != null)
@@ -1556,6 +1586,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsStringAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueStringModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/string?");
             if (precision != null)
@@ -1690,6 +1723,9 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<SaveValueCreateProofResult> SaveValuesAsDoubleAsync(Precision? precision, ProofKind? proofKind, System.Collections.Generic.IEnumerable<CreateValueDoubleModel> body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/double?");
             if (precision != null)
@@ -1962,6 +1998,8 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Values { get; set; }
     
+        [System.Runtime.Serialization.EnumMember(Value = @"error")]
+        Error = 2,
     
     }
     
@@ -2317,7 +2355,6 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             Result = result;
         }
     }
-
 }
 
 #pragma warning restore 1591
