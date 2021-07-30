@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "netcore", "netcore.csproj", "{3502C644-B505-47DD-9CE8-573BFA56F745}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "apiclient", "..\..\clients\netcore\apiclient.csproj", "{1CAFF6B2-F148-46F7-AE8E-750A1DB91992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tributech.Dsk.Api.Clients", "..\..\clients\netcore\Tributech.Dsk.Api.Clients.csproj", "{1CAFF6B2-F148-46F7-AE8E-750A1DB91992}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
