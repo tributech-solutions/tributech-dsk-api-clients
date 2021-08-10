@@ -30,7 +30,7 @@ namespace Tributech.Dsk.Api.Clients {
 
 		private readonly string _clientSecret;
 
-		private readonly object _lockobj = new object();
+		private readonly SemaphoreSlim _refreshTokenLock = new SemaphoreSlim(1, 1);
 
 		/// <summary>
 		/// Creates an instance of the APIAuthHandler for access to the DSK APIs.
@@ -54,12 +54,16 @@ namespace Tributech.Dsk.Api.Clients {
 		}
 
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+
 			if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
-				lock(_lockobj) {
+
+				await _refreshTokenLock.WaitAsync();
+				try {
 					if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
-						RefreshToken(cancellationToken).Wait(); // cannot await inside of lock
+						await RefreshToken(cancellationToken);
 					}
 				}
+				finally { _refreshTokenLock.Release(); }
 			}
 
 			request.Headers.Add("Authorization", $"Bearer {_token}");
