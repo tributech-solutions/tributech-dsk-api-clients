@@ -1278,7 +1278,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             }
         }
     
-        /// <summary>Get values of a data stream decoded as int[]</summary>
+        /// <summary>Get values of a data stream decoded as int</summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
@@ -1296,7 +1296,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Get values of a data stream decoded as int[]</summary>
+        /// <summary>Get values of a data stream decoded as int</summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
@@ -2800,8 +2800,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         public System.DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>The actual data stored in this 'Value'</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<float> Values { get; set; }
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public float Values { get; set; }
     
         /// <summary>The synchronisation sequence number. &lt;br /&gt;
         /// <br/>The sequence defines a order for the Values within a ValueMetadata group
@@ -2832,8 +2832,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         public System.DateTimeOffset CreatedAt { get; set; }
     
         /// <summary>The actual data stored in this 'Value'</summary>
-        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<int> Values { get; set; }
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Values { get; set; }
     
         /// <summary>The synchronisation sequence number. &lt;br /&gt;
         /// <br/>The sequence defines a order for the Values within a ValueMetadata group
