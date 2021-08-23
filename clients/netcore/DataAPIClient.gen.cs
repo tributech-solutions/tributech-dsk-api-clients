@@ -1278,6 +1278,125 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             }
         }
     
+        /// <summary>Get values of a data stream decoded as double</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        {
+            return GetValuesSingleDoubleAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Get values of a data stream decoded as double</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/singledouble/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (orderBy != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageSize != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueDoubleModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
         /// <summary>Get values of a data stream decoded as int</summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
@@ -1397,6 +1516,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             }
         }
     
+        /// <summary>Get values of a data stream decoded as float</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
         /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
@@ -1413,6 +1534,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Get values of a data stream decoded as float</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
         /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
