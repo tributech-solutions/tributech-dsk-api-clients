@@ -1290,7 +1290,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
         {
             return GetValuesSingleDoubleAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
         }
@@ -1308,7 +1308,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             if (valueMetadataId == null)
                 throw new System.ArgumentNullException("valueMetadataId");
@@ -1370,7 +1370,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueDoubleModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2957,6 +2957,38 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <summary>The actual data stored in this 'Value'</summary>
         [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Values { get; set; }
+    
+        /// <summary>The synchronisation sequence number. &lt;br /&gt;
+        /// <br/>The sequence defines a order for the Values within a ValueMetadata group
+        /// <br/>and is used for detection data-gaps on a receiving Node.</summary>
+        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long SyncNr { get; set; }
+    
+        /// <summary>The size of the 'Values' in byte.</summary>
+        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Size { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ReadValueSingleDoubleModel 
+    {
+        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Timestamp { get; set; }
+    
+        /// <summary>The timestamp at which the Value was created on the server.</summary>
+        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset CreatedAt { get; set; }
+    
+        /// <summary>The actual data stored in this 'Value'</summary>
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Values { get; set; }
     
         /// <summary>The synchronisation sequence number. &lt;br /&gt;
         /// <br/>The sequence defines a order for the Values within a ValueMetadata group
