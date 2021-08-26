@@ -2900,11 +2900,11 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid ValueMetadataId { get; set; }
     
-        /// <summary>The first timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        /// <summary>The first timestamp (between the from and to parameters if provided) at which the Value was recorded on the trust agent/edge device.</summary>
         [Newtonsoft.Json.JsonProperty("firstTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset FirstTimestamp { get; set; }
     
-        /// <summary>The last timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        /// <summary>The last timestamp (between the from and to parameters if provided) at which the Value was recorded on the trust agent/edge device.</summary>
         [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset LastTimestamp { get; set; }
     
