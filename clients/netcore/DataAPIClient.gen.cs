@@ -504,26 +504,63 @@ namespace Tributech.Dsk.Api.Clients.DataApi
     
         /// <summary>Query basic statistics of a value metadata id</summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId)
+        public System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
         {
-            return GetStatisticsAsync(valueMetadataId, System.Threading.CancellationToken.None);
+            return GetStatisticsAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Query basic statistics of a value metadata id</summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             if (valueMetadataId == null)
                 throw new System.ArgumentNullException("valueMetadataId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/statistics/{valueMetadataId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/statistics/{valueMetadataId}?");
             urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (orderBy != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageSize != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             var disposeClient_ = false;
