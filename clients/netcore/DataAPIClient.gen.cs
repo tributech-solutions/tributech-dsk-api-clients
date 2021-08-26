@@ -508,15 +508,11 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
         /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// <br/>Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        public System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to)
         {
-            return GetStatisticsAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
+            return GetStatisticsAsync(valueMetadataId, from, to, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -526,13 +522,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
         /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
         /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
-        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
-        /// <br/>Values are ordered by Timestamp</param>
-        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
-        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, System.Threading.CancellationToken cancellationToken)
         {
             if (valueMetadataId == null)
                 throw new System.ArgumentNullException("valueMetadataId");
@@ -547,18 +539,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             if (to != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (orderBy != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageNumber != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (pageSize != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
