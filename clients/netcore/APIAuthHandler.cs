@@ -57,7 +57,7 @@ namespace Tributech.Dsk.Api.Clients {
 
 			if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
 
-				await _refreshTokenLock.WaitAsync().ConfigureAwait(false);
+				await _refreshTokenLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 				try {
 					if (DateTime.Now.Ticks > _tokenValidUntil.Ticks) {
 						await RefreshToken(cancellationToken).ConfigureAwait(false);
