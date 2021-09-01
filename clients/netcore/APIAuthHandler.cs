@@ -88,7 +88,7 @@ namespace Tributech.Dsk.Api.Clients {
 				throw new Exception("Tributech API Authorization failed");
 			}
 
-			var responseBodyString = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+			var responseBodyString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 			var responseBody = JsonConvert.DeserializeObject<AuthResponse>(responseBodyString);
 
 			_token = responseBody.Access_token;
