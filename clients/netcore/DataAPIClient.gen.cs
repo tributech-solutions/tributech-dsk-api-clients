@@ -502,6 +502,125 @@ namespace Tributech.Dsk.Api.Clients.DataApi
             }
         }
     
+        /// <summary>Query basic statistics of a value metadata id</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to)
+        {
+            return GetStatisticsAsync(valueMetadataId, from, to, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Query basic statistics of a value metadata id</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<ReadStatisticsModel> GetStatisticsAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/statistics/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ReadStatisticsModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
         /// <summary>Get status about Values to be synced for a data stream, that is part of a given sync-request.</summary>
         /// <param name="requestId">The RequestId.</param>
         /// <param name="valueMetadataId">The ValueMedataId of the data stream.</param>
@@ -1252,6 +1371,363 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueDoubleModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Get values of a data stream decoded as double</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        {
+            return GetValuesSingleDoubleAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Get values of a data stream decoded as double</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>> GetValuesSingleDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/singledouble/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (orderBy != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageSize != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueSingleDoubleModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Get values of a data stream decoded as int</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueIntModel>> GetValuesAsIntAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        {
+            return GetValuesAsIntAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Get values of a data stream decoded as int</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueIntModel>> GetValuesAsIntAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/int/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (orderBy != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageSize != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueIntModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Get values of a data stream decoded as float</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueFloatModel>> GetValuesAsFloatAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize)
+        {
+            return GetValuesAsFloatAsync(valueMetadataId, from, to, orderBy, pageNumber, pageSize, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>Get values of a data stream decoded as float</summary>
+        /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
+        /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &gt;= From)</param>
+        /// <param name="to">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' before the given filter &lt;br /&gt;
+        /// <br/>(format: ISO 8601, default: No filtering occurs, behavior: Timestamp &lt; To)</param>
+        /// <param name="orderBy">Sort order of the returned 'Values' (default: "asc", alternative: "desc")
+        /// <br/>Values are ordered by Timestamp</param>
+        /// <param name="pageNumber">Page number (first page is 1, default: 1, min: 1, max: 2147483647)</param>
+        /// <param name="pageSize">Page size (default: 100, min: 1, max: 2147483647)</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueFloatModel>> GetValuesAsFloatAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/values/float/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (from != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("From") + "=").Append(System.Uri.EscapeDataString(from.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (to != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("To") + "=").Append(System.Uri.EscapeDataString(to.Value.ToString("o", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (orderBy != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrderBy") + "=").Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (pageSize != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("PageSize") + "=").Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadValueFloatModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2438,6 +2914,32 @@ namespace Tributech.Dsk.Api.Clients.DataApi
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ReadStatisticsModel 
+    {
+        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>The first timestamp (between the from and to parameters if provided) at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("firstTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset FirstTimestamp { get; set; }
+    
+        /// <summary>The last timestamp (between the from and to parameters if provided) at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("lastTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset LastTimestamp { get; set; }
+    
+        /// <summary>The total size of the 'Values' in byte.</summary>
+        [Newtonsoft.Json.JsonProperty("totalBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long TotalBytes { get; set; }
+    
+        /// <summary>The total count of the 'Values'.</summary>
+        [Newtonsoft.Json.JsonProperty("totalCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int TotalCount { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class ReadSyncRequestSizeModel 
     {
         /// <summary>ID of the data stream</summary>
@@ -2536,6 +3038,102 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <summary>The actual data stored in this 'Value'</summary>
         [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<double> Values { get; set; }
+    
+        /// <summary>The synchronisation sequence number. &lt;br /&gt;
+        /// <br/>The sequence defines a order for the Values within a ValueMetadata group
+        /// <br/>and is used for detection data-gaps on a receiving Node.</summary>
+        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long SyncNr { get; set; }
+    
+        /// <summary>The size of the 'Values' in byte.</summary>
+        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Size { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ReadValueFloatModel 
+    {
+        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Timestamp { get; set; }
+    
+        /// <summary>The timestamp at which the Value was created on the server.</summary>
+        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset CreatedAt { get; set; }
+    
+        /// <summary>The actual data stored in this 'Value'</summary>
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public float Values { get; set; }
+    
+        /// <summary>The synchronisation sequence number. &lt;br /&gt;
+        /// <br/>The sequence defines a order for the Values within a ValueMetadata group
+        /// <br/>and is used for detection data-gaps on a receiving Node.</summary>
+        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long SyncNr { get; set; }
+    
+        /// <summary>The size of the 'Values' in byte.</summary>
+        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Size { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ReadValueIntModel 
+    {
+        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Timestamp { get; set; }
+    
+        /// <summary>The timestamp at which the Value was created on the server.</summary>
+        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset CreatedAt { get; set; }
+    
+        /// <summary>The actual data stored in this 'Value'</summary>
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Values { get; set; }
+    
+        /// <summary>The synchronisation sequence number. &lt;br /&gt;
+        /// <br/>The sequence defines a order for the Values within a ValueMetadata group
+        /// <br/>and is used for detection data-gaps on a receiving Node.</summary>
+        [Newtonsoft.Json.JsonProperty("syncNr", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long SyncNr { get; set; }
+    
+        /// <summary>The size of the 'Values' in byte.</summary>
+        [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Size { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ReadValueSingleDoubleModel 
+    {
+        /// <summary>ValueMetadataId, the ID of the data stream which the 'Value' belongs to</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>The timestamp at which the Value was recorded on the trust agent/edge device.</summary>
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Timestamp { get; set; }
+    
+        /// <summary>The timestamp at which the Value was created on the server.</summary>
+        [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset CreatedAt { get; set; }
+    
+        /// <summary>The actual data stored in this 'Value'</summary>
+        [Newtonsoft.Json.JsonProperty("values", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Values { get; set; }
     
         /// <summary>The synchronisation sequence number. &lt;br /&gt;
         /// <br/>The sequence defines a order for the Values within a ValueMetadata group
