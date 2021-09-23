@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <PackageId>Tributech.Dsk.Api.Clients</PackageId>
-    <Version>1.9.1</Version>
+    <Version>1.9.2-rc0</Version>
 
     <Title>Tributech DSK API Clients</Title>
     <Authors>Tributech Solutions GmbH</Authors>
