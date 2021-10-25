@@ -154,7 +154,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time.</summary>
+        /// <summary>Retrieves a Proof for given data stream (by ValueMetadataId) at a given point in time.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
         /// <returns>Success</returns>
@@ -165,7 +165,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time.</summary>
+        /// <summary>Retrieves a Proof for given data stream (by ValueMetadataId) at a given point in time.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
         /// <returns>Success</returns>
@@ -614,7 +614,103 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
             }
         }
     
-        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<ValidateStreamResult> ValidateStreamAsync(System.Guid valueMetadataId, Precision? precision, ProofKind? proofKind, ValidateStreamParams body)
+        {
+            return ValidateStreamAsync(valueMetadataId, precision, proofKind, body, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<ValidateStreamResult> ValidateStreamAsync(System.Guid valueMetadataId, Precision? precision, ProofKind? proofKind, ValidateStreamParams body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (valueMetadataId == null)
+                throw new System.ArgumentNullException("valueMetadataId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/validate/{valueMetadataId}?");
+            urlBuilder_.Replace("{valueMetadataId}", System.Uri.EscapeDataString(ConvertToString(valueMetadataId, System.Globalization.CultureInfo.InvariantCulture)));
+            if (precision != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("precision") + "=").Append(System.Uri.EscapeDataString(ConvertToString(precision, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (proofKind != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("proofKind") + "=").Append(System.Uri.EscapeDataString(ConvertToString(proofKind, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+    
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+    
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidateStreamResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <summary>Retrieves a Proof for given data stream (by ValueMetadataId) at a given point in time along with the associated values.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
@@ -626,7 +722,7 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Retrieves a Proof for given data strem (by ValueMetadaId) at a given point in time along with the associated values.</summary>
+        /// <summary>Retrieves a Proof for given data stream (by ValueMetadataId) at a given point in time along with the associated values.</summary>
         /// <param name="valueMetadataId">ValueMetadataID of the data stream to validate</param>
         /// <param name="timestamp">Point in time of which the proof should be validated / fetched</param>
         /// <param name="precision">Precision of DateTime. Default = MicroSeconds.  Available Values: 1 (=Microseconds), 2 (=Nanoseconds).</param>
@@ -2248,6 +2344,54 @@ namespace Tributech.Dsk.Api.Clients.TrustApi
         [Newtonsoft.Json.JsonProperty("resultCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ResultCode { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ValidateStreamParams 
+    {
+        /// <summary>X509 Public key as string</summary>
+        [Newtonsoft.Json.JsonProperty("publicKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PublicKey { get; set; }
+    
+        /// <summary>From point of which proofs should be validated</summary>
+        [Newtonsoft.Json.JsonProperty("from", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset From { get; set; }
+    
+        /// <summary>To point of which proofs should be validated</summary>
+        [Newtonsoft.Json.JsonProperty("to", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset To { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ValidateStreamResult 
+    {
+        /// <summary>The ValueMetadataId of the stream</summary>
+        [Newtonsoft.Json.JsonProperty("valueMetadataId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid ValueMetadataId { get; set; }
+    
+        /// <summary>Indicates whether the stream validated successfully</summary>
+        [Newtonsoft.Json.JsonProperty("valid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Valid { get; set; }
+    
+        /// <summary>Textual validation result</summary>
+        [Newtonsoft.Json.JsonProperty("resultMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ResultMessage { get; set; }
+    
+        /// <summary>Number of proofs checked</summary>
+        [Newtonsoft.Json.JsonProperty("numberOfProofs", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int NumberOfProofs { get; set; }
+    
+        /// <summary>Number of valid proofs</summary>
+        [Newtonsoft.Json.JsonProperty("validProofs", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ValidProofs { get; set; }
+    
+        /// <summary>Dictionary of errors</summary>
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.IDictionary<string, string> Errors { get; set; }
     
     
     }
