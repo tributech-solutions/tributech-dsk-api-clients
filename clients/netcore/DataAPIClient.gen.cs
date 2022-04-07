@@ -354,7 +354,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadValueDoubleModel>> GetValuesAsDoubleAsync(System.Guid valueMetadataId, System.DateTimeOffset? from, System.DateTimeOffset? to, string orderBy, int? pageNumber, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Get values of a data stream decoded as double[]
+        /// Get values of a data stream decoded as long[]
         /// </summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
@@ -371,7 +371,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get values of a data stream decoded as double[]
+        /// Get values of a data stream decoded as long[]
         /// </summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
@@ -2250,7 +2250,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
-        /// Get values of a data stream decoded as double[]
+        /// Get values of a data stream decoded as long[]
         /// </summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
@@ -2270,7 +2270,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get values of a data stream decoded as double[]
+        /// Get values of a data stream decoded as long[]
         /// </summary>
         /// <param name="valueMetadataId">Query data from the data stream with this ID</param>
         /// <param name="from">Filter result by 'Timestamp', only include 'Values' with a 'Timestamp' equal or after the given filter &lt;br /&gt;
