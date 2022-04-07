@@ -1,5 +1,5 @@
 {
-  "runtime": "NetCore31",
+  "runtime": "Net60",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
@@ -14,7 +14,7 @@
       "clientBaseClass": null,
       "configurationClass": null,
       "generateClientClasses": true,
-      "generateClientInterfaces": false,
+      "generateClientInterfaces": true,
       "clientBaseInterface": null,
       "injectHttpClient": true,
       "disposeHttpClient": true,
@@ -91,7 +91,6 @@
       "typeNameGeneratorType": null,
       "propertyNameGeneratorType": null,
       "enumNameGeneratorType": null,
-      "checksumCacheEnabled": false,
       "serviceHost": null,
       "serviceSchemes": null,
       "output": "DataAPIClient.gen.cs",
