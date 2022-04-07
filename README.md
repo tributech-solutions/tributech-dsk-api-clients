@@ -18,7 +18,7 @@ The following clients are available:
 
 The clients can be used to create a custom connector to connect a data source to the relevant Tributech Dataspace Kit endpoints. The clients help in achieving the goal of integrating data sources via the Tributech Dataspace Kit APIs, namely the Data Api and Trust Api, as seen in the image below (marked with the red rectangle).
 
-![Integration via APIs](./assets/img/integration.jpg)
+![Integration via APIs](./assets/img/integration.png)
 
 ---
 
