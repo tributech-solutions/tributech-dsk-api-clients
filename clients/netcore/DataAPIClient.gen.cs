@@ -42,16 +42,18 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationAsync(System.Guid valueMetadataId, System.DateTimeOffset nextLastTimestamp, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Get ProofLocation of a data stream for a given point in time.
+        /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
+        /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationViaUriAsync(string uri);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get ProofLocation of a data stream for a given point in time.
+        /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
+        /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationViaUriAsync(string uri, System.Threading.CancellationToken cancellationToken);
@@ -109,19 +111,19 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationAsync(CreateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update single ProofLocation
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <param name="body">Single ProofLocation to be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update single ProofLocation
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <param name="body">Single ProofLocation to be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
 
@@ -143,18 +145,18 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update multiple ProofLocations
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update multiple ProofLocations
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
@@ -886,8 +888,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
-        /// Get ProofLocation of a data stream for a given point in time.
+        /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
+        /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationViaUriAsync(string uri)
@@ -897,8 +900,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get ProofLocation of a data stream for a given point in time.
+        /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
+        /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationViaUriAsync(string uri, System.Threading.CancellationToken cancellationToken)
@@ -1238,10 +1242,10 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update single ProofLocation
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <param name="body">Single ProofLocation to be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body)
         {
@@ -1250,10 +1254,10 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update single ProofLocation
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <param name="body">Single ProofLocation to be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken)
         {
@@ -1454,9 +1458,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update multiple ProofLocations
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body)
@@ -1466,9 +1470,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update mulitple ProofLocations
+        /// Update multiple ProofLocations
         /// </summary>
-        /// <param name="body">The list of ProofLocations to be created</param>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
