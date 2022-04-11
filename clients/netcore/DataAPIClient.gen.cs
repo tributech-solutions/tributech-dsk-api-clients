@@ -111,21 +111,23 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationAsync(CreateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Update single ProofLocation
+        /// Update single ProofLocation 
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">Single ProofLocation to be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body);
+        System.Threading.Tasks.Task UpdateProofLocationAsync(UpdateProofLocationModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update single ProofLocation
+        /// Update single ProofLocation 
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">Single ProofLocation to be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Add multiple ProofLocations.
@@ -146,20 +148,22 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <summary>
         /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body);
+        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Query basic statistics of a value metadata id
@@ -1242,24 +1246,26 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
-        /// Update single ProofLocation
+        /// Update single ProofLocation 
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">Single ProofLocation to be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body)
+        public virtual System.Threading.Tasks.Task UpdateProofLocationAsync(UpdateProofLocationModel body)
         {
             return UpdateProofLocationAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Update single ProofLocation
+        /// Update single ProofLocation 
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">Single ProofLocation to be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocation");
@@ -1274,7 +1280,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1299,12 +1304,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 400)
@@ -1459,11 +1459,12 @@ namespace Tributech.Dsk.Api.Clients.DataApi
 
         /// <summary>
         /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body)
+        public virtual System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body)
         {
             return UpdateProofLocationsAsync(body, System.Threading.CancellationToken.None);
         }
@@ -1471,11 +1472,12 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
         /// </summary>
         /// <param name="body">The list of ProofLocations which shall be updated</param>
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
@@ -1490,7 +1492,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1515,12 +1516,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         if (status_ == 400)
@@ -4573,11 +4569,14 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Uri { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValidateProofResultEnumeration ValidationResult { get; set; }
+
         /// <summary>
-        /// Result of the latest Validation (optional)
+        /// Execution Time stamp of the Validation (optional)
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? ValidationResult { get; set; }
+        [Newtonsoft.Json.JsonProperty("validationTimestamp", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset? ValidationTimestamp { get; set; }
 
     }
 
@@ -4815,11 +4814,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long Size { get; set; }
 
-        /// <summary>
-        /// Result of the latest Validation (optional)
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? ValidationResult { get; set; }
+        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ValidateProofResultEnumeration ValidationResult { get; set; }
 
         /// <summary>
         /// Timestamp of the latest Validation (optional)
@@ -5259,11 +5255,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Uri { get; set; }
 
-        /// <summary>
-        /// Result of the latest Validation
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Always)]
-        public int ValidationResult { get; set; }
+        public ValidateProofResultEnumeration ValidationResult { get; set; }
 
         /// <summary>
         /// Timestamp of the latest Validation
@@ -5271,6 +5264,30 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("validationTimestamp", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset ValidationTimestamp { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProofResultEnumeration
+    {
+
+        _0 = 0,
+
+        _1 = 1,
+
+        _2 = 2,
+
+        _3 = 3,
+
+        _4 = 4,
+
+        _5 = 5,
+
+        _6 = 6,
+
+        _7 = 7,
+
+        _99 = 99,
 
     }
 
