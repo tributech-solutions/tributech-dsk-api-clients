@@ -4570,6 +4570,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         public string Uri { get; set; }
 
         [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ValidationResult { get; set; }
 
         /// <summary>
@@ -4815,6 +4816,7 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         public long Size { get; set; }
 
         [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ValidationResult { get; set; }
 
         /// <summary>
@@ -5256,6 +5258,8 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         public string Uri { get; set; }
 
         [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ValidateProofResultEnumeration ValidationResult { get; set; }
 
         /// <summary>
@@ -5271,23 +5275,32 @@ namespace Tributech.Dsk.Api.Clients.DataApi
     public enum ValidateProofResultEnumeration
     {
 
-        _0 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"Success")]
+        Success = 0,
 
-        _1 = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ValuesNotFound")]
+        Fail_ValuesNotFound = 1,
 
-        _2 = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofLocationNotFound")]
+        Fail_ProofLocationNotFound = 2,
 
-        _3 = 3,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofNotFound")]
+        Fail_ProofNotFound = 3,
 
-        _4 = 4,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_RootHashMismatch")]
+        Fail_RootHashMismatch = 4,
 
-        _5 = 5,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_SignatureMismatch")]
+        Fail_SignatureMismatch = 5,
 
-        _6 = 6,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_InvalidPublicKey")]
+        Fail_InvalidPublicKey = 6,
 
-        _7 = 7,
+        [System.Runtime.Serialization.EnumMember(Value = @"Fail_ProofNotInChain")]
+        Fail_ProofNotInChain = 7,
 
-        _99 = 99,
+        [System.Runtime.Serialization.EnumMember(Value = @"State_ProofPending")]
+        State_ProofPending = 8,
 
     }
 
