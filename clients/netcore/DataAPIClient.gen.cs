@@ -42,6 +42,59 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         System.Threading.Tasks.Task<ReadProofLocationModel> GetProofLocationAsync(System.Guid valueMetadataId, System.DateTimeOffset nextLastTimestamp, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
+        /// Get Multiple ProofLocactions by their respective Uri
+        /// </summary>
+        /// <param name="uris">Uri to retrieve the ProofLocations from the Trust API.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsViaUrisAsync(System.Collections.Generic.IEnumerable<string> uris);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get Multiple ProofLocactions by their respective Uri
+        /// </summary>
+        /// <param name="uris">Uri to retrieve the ProofLocations from the Trust API.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsViaUrisAsync(System.Collections.Generic.IEnumerable<string> uris, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Add multiple ProofLocations.
+        /// </summary>
+        /// <param name="body">The list of ProofLocations to be created.</param>
+        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Add multiple ProofLocations.
+        /// </summary>
+        /// <param name="body">The list of ProofLocations to be created.</param>
+        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
+        /// </summary>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
+        /// </summary>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
         /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
         /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
@@ -128,42 +181,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocation.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task UpdateProofLocationAsync(UpdateProofLocationModel body, System.Threading.CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Add multiple ProofLocations.
-        /// </summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Add multiple ProofLocations.
-        /// </summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Update multiple ProofLocations
-        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
-        /// </summary>
-        /// <param name="body">The list of ProofLocations which shall be updated</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Update multiple ProofLocations
-        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
-        /// </summary>
-        /// <param name="body">The list of ProofLocations which shall be updated</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Query basic statistics of a value metadata id
@@ -892,6 +909,321 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         }
 
         /// <summary>
+        /// Get Multiple ProofLocactions by their respective Uri
+        /// </summary>
+        /// <param name="uris">Uri to retrieve the ProofLocations from the Trust API.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsViaUrisAsync(System.Collections.Generic.IEnumerable<string> uris)
+        {
+            return GetProofLocationsViaUrisAsync(uris, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get Multiple ProofLocactions by their respective Uri
+        /// </summary>
+        /// <param name="uris">Uri to retrieve the ProofLocations from the Trust API.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ReadProofLocationModel>> GetProofLocationsViaUrisAsync(System.Collections.Generic.IEnumerable<string> uris, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations?");
+            if (uris != null)
+            {
+                foreach (var item_ in uris) { urlBuilder_.Append(System.Uri.EscapeDataString("uris") + "=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
+            }
+            urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ReadProofLocationModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Server Error", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Add multiple ProofLocations.
+        /// </summary>
+        /// <param name="body">The list of ProofLocations to be created.</param>
+        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body)
+        {
+            return SaveProofLocationsAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Add multiple ProofLocations.
+        /// </summary>
+        /// <param name="body">The list of ProofLocations to be created.</param>
+        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 599)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
+        /// </summary>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body)
+        {
+            return UpdateProofLocationsAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Update multiple ProofLocations
+        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
+        /// </summary>
+        /// <param name="body">The list of ProofLocations which shall be updated</param>
+        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ReadErrorResponseModel>("Server Error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Get ProofLocation of a data stream for a specified URI.
         /// </summary>
         /// <param name="uri">Uri to retrieve the ProofLocation from the Trust API.</param>
@@ -1269,218 +1601,6 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocation");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ReadErrorResponseModel>("Server Error", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Add multiple ProofLocations.
-        /// </summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body)
-        {
-            return SaveProofLocationsAsync(body, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Add multiple ProofLocations.
-        /// </summary>
-        /// <param name="body">The list of ProofLocations to be created.</param>
-        /// <returns>ProofLocations created successfully. Returns the number of saved ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UInt64ReadCreateResponseModel> SaveProofLocationsAsync(System.Collections.Generic.IEnumerable<CreateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<UInt64ReadCreateResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ValidationProblemDetails>("Invalid request.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ReadErrorResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ReadErrorResponseModel>("Internal server error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 599)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Duplicate timestamp value violates unique constraint.", status_, responseText_, headers_, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Update multiple ProofLocations
-        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
-        /// </summary>
-        /// <param name="body">The list of ProofLocations which shall be updated</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body)
-        {
-            return UpdateProofLocationsAsync(body, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Update multiple ProofLocations
-        /// <br/>!! BEWARE !! Only Proof Location(s) from the current Node are supported
-        /// </summary>
-        /// <param name="body">The list of ProofLocations which shall be updated</param>
-        /// <returns>ProofLocations updated successfully. Returns the number of updated ProofsLocations.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UpdateProofLocationsAsync(System.Collections.Generic.IEnumerable<UpdateProofLocationModel> body, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/prooflocations");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -4569,9 +4689,12 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Uri { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        /// <summary>
+        /// Result of the latest Validation (optional)
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public ValidateProofResultEnumeration ValidationResult { get; set; }
+        public ValidateProofResultEnumeration? ValidationResult { get; set; }
 
         /// <summary>
         /// Execution Time stamp of the Validation (optional)
@@ -4815,9 +4938,12 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long Size { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        /// <summary>
+        /// Result of the latest Validation (optional)
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public ValidateProofResultEnumeration ValidationResult { get; set; }
+        public ValidateProofResultEnumeration? ValidationResult { get; set; }
 
         /// <summary>
         /// Timestamp of the latest Validation (optional)
@@ -5257,6 +5383,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Uri { get; set; }
 
+        /// <summary>
+        /// Result of the latest Validation (optional)
+        /// </summary>
         [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
