@@ -4815,9 +4815,9 @@ namespace Tributech.Dsk.Api.Clients.DataApi
         [Newtonsoft.Json.JsonProperty("size", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long Size { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("validationResult", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public ValidateProofResultEnumeration ValidationResult { get; set; }
+        public ValidateProofResultEnumeration? ValidationResult { get; set; }
 
         /// <summary>
         /// Timestamp of the latest Validation (optional)
