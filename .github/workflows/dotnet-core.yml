@@ -4,32 +4,42 @@ on:
   push:
     branches: [ 'master' ]
 
+env:
+  TRIBUTECH_FEED: https://pkgs.dev.azure.com/tributechsolutions/Tributech%20DataSpace%20Kit/_packaging/tributech-dsk/nuget/v3/index.json
+  BUILD_CONFIGURATION: 'Release'    # set this to the appropriate build configuration
+  DOTNET_VERSION: '6.x' 
+
 jobs:
   publish:
     name: build, pack & publish
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2    
+    name: Nuget
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
-      - name: Publish NuGet
-        uses: brandedoutcast/publish-nuget@v2.5.5
         with:
-          # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: 'clients/netcore/Tributech.Dsk.Api.Clients.csproj'
-          # NuGet package id, used for version detection & defaults to project name
-          # PACKAGE_NAME: # optional
-          # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
-          # VERSION_FILE_PATH: # optional
-          # Regex pattern to extract version info in a capturing group
-          # VERSION_REGEX: # optional, default is ^\s*<Version>(.*)<\/Version>\s*$
-          # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
-          # VERSION_STATIC: # optional
-          # Flag to toggle git tagging, enabled by default
-          TAG_COMMIT: false
-          # Format of the git tag, [*] gets replaced with actual version
-          # TAG_FORMAT: # optional, default is v*
-          # API key to authenticate with NuGet server
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          # NuGet server uri hosting the packages, defaults to https://api.nuget.org
-          # NUGET_SOURCE: # optional, default is https://api.nuget.org
-          # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-          # INCLUDE_SYMBOLS: # optional
+          fetch-depth: 0
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          source-url: ${{ env.TRIBUTECH_FEED }}
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_PAT }} 
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Determine GitVersion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
+          configFilePath: 'GitVersion.yml'
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      - name: Build Nuget DskApiClient
+        run: dotnet build -p:Version=${{env.GitVersion_NuGetVersionV2}} -c ${{ env.BUILD_CONFIGURATION }} client/netcore/Tributech.Dsk.Api.Clients.csproj
+      - name: Push Nuget Package
+        run: dotnet nuget push **/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate 
